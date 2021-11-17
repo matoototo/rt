@@ -20,7 +20,7 @@ struct vec3 {
     double z() const { return e[2]; }
 
     vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
-    vec3 unit_vec() { if (this->length() > 0) return *this / this->length();
+    vec3 unit_vec() const { if (this->length() > 0) return *this / this->length();
                       else return vec3(0.0, 0.0, 0.0); }
 
     double length() const { return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]); }

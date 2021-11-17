@@ -21,17 +21,22 @@ struct Image {
     constexpr vec3 limit_x() const { return vec3(this->c.vpw, 0, 0); }
     constexpr vec3 limit_y() const { return vec3(0, this->c.vph, 0); }
 
-    void fill_pixels(std::function<color (int, int, Image&)>);
+    void fill_pixels(std::function<color (int, int, ray&, Image&)>);
 
     std::vector<color> img;
     const int w, h;
     Camera c;
 };
 
-void Image::fill_pixels(std::function<color (int, int, Image&)> f) {
+void Image::fill_pixels(std::function<color (int, int, ray&, Image&)> f) {
+    auto bl = this->bottom_left();
+    auto lim_x = this->limit_x();
+    auto lim_y = this->limit_y();
+
     for (int j = 0; j < h; j++) {
         for (int i = 0; i < w; i++) {
-            this->at(i, j) = f(i, j, *this);
+            ray r = ray(this->c.origin, bl + lim_x * double(i+1)/this->w + lim_y * double(j+1)/this->h - this->c.origin);
+            this->at(i, j) = f(i, j, r, *this);
         }
     }
 }
@@ -47,23 +52,13 @@ void Image::to_ppm(std::ostream& out) const {
     }
 }
 
-color create_sky(int i, int j, const Image& img) {
-    auto bl = img.bottom_left();
-    auto lim_x = img.limit_x();
-    auto lim_y = img.limit_y();
-    ray r = ray(img.c.origin, bl + lim_x * double(i+1)/img.w + lim_y * double(j+1)/img.h - img.c.origin);
+color create_sky(const int& i, const int& j, const ray& r, const Image& img) {
     double mix = r.dir.unit_vec().y()*0.5 + 0.5;
     return mix*color(1.0, 1.0, 1.0) + (1-mix)*color(0.5, 0.7, 1.0);
 }
 
-color add_sphere(int i, int j, const Image& img) {
+color add_sphere(const int& i, const int& j, const ray& r, const Image& img) {
     Sphere x = Sphere(point3(0, 0, -2), 0.5, {1, 0, 0});
-
-    auto bl = img.bottom_left();
-    auto lim_x = img.limit_x();
-    auto lim_y = img.limit_y();
-    ray r = ray(img.c.origin, bl + lim_x * double(i+1)/img.w + lim_y * double(j+1)/img.h - img.c.origin);
-
     if (x.is_hit(r)) return x.color;
     return img.at(i, j);
 }
