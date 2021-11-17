@@ -7,12 +7,13 @@ struct vec3;
 
 vec3 operator*(const vec3& vec, const double& x);
 vec3 operator*(const double& x, const vec3& vec);
+double operator*(const vec3& v1, const vec3& v2);
 vec3 operator/(const vec3& vec, const double& x);
 vec3 operator/(const double& x, const vec3& vec);
 
 struct vec3 {
-    vec3(): e{0, 0, 0} {}
-    vec3(double x, double y, double z): e{x,y,z} {}
+    constexpr vec3(): e{0, 0, 0} {}
+    constexpr vec3(double x, double y, double z): e{x,y,z} {}
 
     double x() const { return e[0]; }
     double y() const { return e[1]; }
@@ -44,6 +45,7 @@ vec3 operator-(const vec3& a, const vec3& b) {
 
 vec3 operator*(const vec3& vec, const double& x) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }
 vec3 operator*(const double& x, const vec3& vec) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }
+double operator*(const vec3& v1, const vec3& v2) { return v1.x()*v2.x() + v1.y()*v2.y() + v1.z()*v2.z(); }
 vec3 operator/(const vec3& vec, const double& x) { return vec * (1/x); }
 vec3 operator/(const double& x, const vec3& vec) { return vec * (1/x); }
 
