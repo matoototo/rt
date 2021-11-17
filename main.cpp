@@ -56,13 +56,26 @@ color create_sky(int i, int j, const Image& img) {
     return mix*color(1.0, 1.0, 1.0) + (1-mix)*color(0.5, 0.7, 1.0);
 }
 
+color add_sphere(int i, int j, const Image& img) {
+    Sphere x = Sphere(point3(0, 0, -2), 0.5, {1, 0, 0});
+
+    auto bl = img.bottom_left();
+    auto lim_x = img.limit_x();
+    auto lim_y = img.limit_y();
+    ray r = ray(img.c.origin, bl + lim_x * double(i+1)/img.w + lim_y * double(j+1)/img.h - img.c.origin);
+
+    if (x.is_hit(r)) return x.color;
+    return img.at(i, j);
+}
+
 int main() {
     std::ofstream file("test.ppm");
 
     Camera cam = Camera(point3(0, 0, 0), 4, 2, 2);
-    Image sky = Image(200, 100, cam);
+    Image sky = Image(400, 200, cam);
 
     sky.fill_pixels(create_sky);
+    sky.fill_pixels(add_sphere);
     sky.to_ppm(file);
 
     return 0;
