@@ -31,7 +31,7 @@ struct vec3 {
 };
 
 std::ostream& operator<<(std::ostream& out, const vec3& v) {
-    return out << int(v.x()) << ' ' << int(v.y()) << ' ' << int(v.z());
+    return out << v.x() << ' ' << v.y() << ' ' << v.z();
 }
 
 vec3 operator+(const vec3& a, const vec3& b) {
