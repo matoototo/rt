@@ -3,11 +3,13 @@
 #include "ray.h"
 
 struct Sphere {
-    Sphere(const point3& center, const double& radius, const color& color): center(center), radius(radius), color(color) {}
+    Sphere(const point3& center, const double& radius, const color& color, const double& gl):
+                         center(center), radius(radius), color(color), glow(gl) {}
 
     double hit(const ray& r) const;
 
     color color;
+    double glow;
     point3 center;
     double radius;
 };

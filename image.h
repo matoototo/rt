@@ -1,20 +1,13 @@
 #pragma once
 
 #include <vector>
-#include <random>
 #include <functional>
 
 #include "camera.h"
 #include "vec3.h"
 #include "ray.h"
+#include "util.h"
 
-inline double rdbl(int x) {
-    if (x == 0) return 0; // lets us have a 'clean' single sample
-    static std::normal_distribution<double> norm(0, 0.25);
-    static std::uniform_real_distribution<double> unif(0, 1.0);
-    static std::default_random_engine re;
-    return norm(re);
-}
 
 struct Image {
     Image(const int& w, const int& h, const Camera& c): w(w), h(h), c(c) { img.resize(w*h, color(0, 0, 0)); }
@@ -48,7 +41,7 @@ inline void Image::fill_pixels(std::function<color (int, int, ray&, Image&)> f, 
                 ray r = ray(this->c.origin, bl + lim_x * (i+1+rdbl(_))/this->w + lim_y * (j+1+rdbl(_))/this->h - this->c.origin);
                 pixel = pixel + f(i, j, r, *this);
             }
-            this->at(i, j) = pixel / aa_samples;
+            this->at(i, j) = (pixel / aa_samples);
         }
     }
 }

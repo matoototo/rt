@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 
+#include "util.h"
+
 struct vec3;
 
 vec3 operator*(const vec3& vec, const double& x);
@@ -25,11 +27,17 @@ struct vec3 {
 
     double length() const { return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]); }
 
+    static vec3 rand();
+
     friend std::ostream& operator<<(std::ostream& out, const vec3& v);
 
     private:
         double e[3];
 };
+
+inline vec3 vec3::rand() {
+    return vec3(rdbl(), rdbl(), rdbl());
+}
 
 inline std::ostream& operator<<(std::ostream& out, const vec3& v) {
     return out << v.x() << ' ' << v.y() << ' ' << v.z();
