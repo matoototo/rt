@@ -7,7 +7,9 @@
 
 #include "ray.h"
 #include "image.h"
+#include "object.h"
 #include "sphere.h"
+#include "rectangle.h"
 
 
 using draw_func = std::function<color (int, int, ray&, Image&)>;
@@ -17,6 +19,7 @@ struct Scene {
     Scene(int n_bounces): n_bounces(n_bounces) {}
 
     void add_sphere(const point3&, const double&, const color&, const double&);
+    void add_rectangle(const point3&, const double&, const double&, const color&, const double&, const face&);
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
 
@@ -25,33 +28,38 @@ struct Scene {
     }
 
     private:
-        std::vector<std::shared_ptr<Sphere>> spheres;
+        std::vector<std::shared_ptr<Object>> objects;
         int n_bounces;
 };
 
 
 inline void Scene::add_sphere(const point3& center, const double& radius, const color& color, const double& gl) {
-    spheres.push_back(std::make_shared<Sphere>(center, radius, color, gl));
+    objects.push_back(std::make_shared<Sphere>(center, radius, color, gl));
+}
+
+inline void Scene::add_rectangle(const point3& o, const double& w, const double& h, const color& color, const double& gl, const face& f) {
+    objects.push_back(std::make_shared<Rectangle>(o, w, h, color, gl, f));
 }
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
     if (n <= 0) return color(0, 0, 0);
 
     double t_last = std::numeric_limits<double>::max();
-    std::shared_ptr<Sphere> s_last;
-    for (auto& x : spheres) {
+    std::shared_ptr<Object> o_last;
+    for (auto& x : objects) {
         auto t = x->hit(r);
         if (t > 0 && t < t_last) {
             t_last = t;
-            s_last = x;
+            o_last = x;
         }
     }
 
     if (t_last < std::numeric_limits<double>::max()) {
         point3 hit_point = r.at(t_last);
-        vec3 normal = hit_point - s_last->center;
+        vec3 normal = o_last->normal(hit_point);
+        if (r.dir * normal > 0) normal = -normal;
         ray new_ray = ray(hit_point, normal.unit_vec() + vec3::rand().unit_vec());
-        return 0.5*this->draw(i, j, new_ray, img, n-1) + std::pow(s_last->glow, 1)*s_last->color;
+        return 0.5*this->draw(i, j, new_ray, img, n-1) + std::pow(o_last->glow, 1)*o_last->obj_color;
     }
     return draw_sky(i, j, r, img);
 }
