@@ -16,7 +16,7 @@ struct Scene {
 
     Scene(int n_bounces): n_bounces(n_bounces) {}
 
-    void add_sphere(const std::shared_ptr<Sphere>&);
+    void add_sphere(const point3&, const double&, const color&, const double&);
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
 
@@ -30,8 +30,8 @@ struct Scene {
 };
 
 
-inline void Scene::add_sphere(const std::shared_ptr<Sphere>& sphere) {
-    spheres.push_back(sphere);
+inline void Scene::add_sphere(const point3& center, const double& radius, const color& color, const double& gl) {
+    spheres.push_back(std::make_shared<Sphere>(center, radius, color, gl));
 }
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
