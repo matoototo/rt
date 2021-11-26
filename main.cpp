@@ -2,6 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <functional>
+#include <limits>
+#include <memory>
 
 #include "vec3.h"
 #include "ray.h"
@@ -43,7 +45,7 @@ void Image::fill_pixels(std::function<color (int, int, ray&, Image&)> f) {
 
 void Image::to_ppm(std::ostream& out) const {
     out << "P3\n" << w << ' ' << h << "\n255\n";
-    for (auto j = 0; j < h; j++) {
+    for (auto j = h-1; j >= 0; j--) {
         for (auto i = 0; i < w; i++) {
             color c = at(i, j) * 255;
             out << int(c.x()) << ' ' << int(c.y()) << ' ' << int(c.z()) << '\n';
@@ -54,12 +56,29 @@ void Image::to_ppm(std::ostream& out) const {
 
 color create_sky(const int& i, const int& j, const ray& r, const Image& img) {
     double mix = r.dir.unit_vec().y()*0.5 + 0.5;
-    return mix*color(1.0, 1.0, 1.0) + (1-mix)*color(0.5, 0.7, 1.0);
+    return (1-mix)*color(1.0, 1.0, 1.0) + mix*color(0.5, 0.7, 1.0);
 }
 
 color add_sphere(const int& i, const int& j, const ray& r, const Image& img) {
-    Sphere x = Sphere(point3(0, 0, -2), 0.5, {1, 0, 0});
-    if (x.is_hit(r)) return x.color;
+    std::vector<std::shared_ptr<Sphere>> spheres;
+    spheres.push_back(std::make_shared<Sphere>(point3{0, 0, -2}, 0.5, color{1, 0, 0}));
+    spheres.push_back(std::make_shared<Sphere>(point3{0, -100.5, -2}, 100, color{1, 0, 0}));
+
+    double t_last = std::numeric_limits<double>::max();
+    std::shared_ptr<Sphere> s_last;
+    for (auto& x : spheres) {
+        auto t = x->hit(r);
+        if (t > 0 && t < t_last) {
+            t_last = t;
+            s_last = x;
+        }
+    }
+
+    if (t_last < std::numeric_limits<double>::max()) {
+        vec3 normal = r.at(t_last) - s_last->center;
+        return 0.5*(normal.unit_vec() + 1.0);
+    }
+
     return img.at(i, j);
 }
 
@@ -67,11 +86,11 @@ int main() {
     std::ofstream file("test.ppm");
 
     Camera cam = Camera(point3(0, 0, 0), 4, 2, 2);
-    Image sky = Image(400, 200, cam);
+    Image img = Image(400, 200, cam);
 
-    sky.fill_pixels(create_sky);
-    sky.fill_pixels(add_sphere);
-    sky.to_ppm(file);
+    img.fill_pixels(create_sky);
+    img.fill_pixels(add_sphere);
+    img.to_ppm(file);
 
     return 0;
 }

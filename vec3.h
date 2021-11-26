@@ -48,6 +48,9 @@ vec3 operator*(const double& x, const vec3& vec) { return vec3(x*vec.x(), x*vec.
 double operator*(const vec3& v1, const vec3& v2) { return v1.x()*v2.x() + v1.y()*v2.y() + v1.z()*v2.z(); }
 vec3 operator/(const vec3& vec, const double& x) { return vec * (1/x); }
 vec3 operator/(const double& x, const vec3& vec) { return vec * (1/x); }
+vec3 operator+(const vec3& vec, const double& x) { return vec3(x+vec.x(), x+vec.y(), x+vec.z()); }
+vec3 operator+(const double& x, const vec3& vec) { return vec3(x+vec.x(), x+vec.y(), x+vec.z()); }
+
 
 using color = vec3;
 using point3 = vec3;
