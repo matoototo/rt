@@ -51,7 +51,7 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
         point3 hit_point = r.at(t_last);
         vec3 normal = hit_point - s_last->center;
         ray new_ray = ray(hit_point, normal.unit_vec() + vec3::rand().unit_vec());
-        return 0.5*this->draw(i, j, new_ray, img, n-1) + std::pow(s_last->glow, n_bounces-n+1)*s_last->color;
+        return 0.5*this->draw(i, j, new_ray, img, n-1) + std::pow(s_last->glow, 1)*s_last->color;
     }
     return draw_sky(i, j, r, img);
 }
