@@ -19,7 +19,7 @@ struct Sphere {
 // (A+Bx)^2 - 2C(A + Bx) + C^2 - r^2 = 0
 // (Bx)^2 + (2AB - 2BC)x + A^2 + C^2 - r^2 - 2AC = 0
 // (Bx)^2 + 2B(A-C)x + (A-C)^2 - r^2 = 0
-double Sphere::hit(const ray& r) const {
+inline double Sphere::hit(const ray& r) const {
     vec3 oc = r.orig - this->center;
     double a = r.dir * r.dir;
     double b = 2 * r.dir * oc;

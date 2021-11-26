@@ -21,7 +21,7 @@ struct vec3 {
 
     vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
     vec3 unit_vec() const { if (this->length() > 0) return *this / this->length();
-                      else return vec3(0.0, 0.0, 0.0); }
+                            else return vec3(0.0, 0.0, 0.0); }
 
     double length() const { return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]); }
 
@@ -31,25 +31,25 @@ struct vec3 {
         double e[3];
 };
 
-std::ostream& operator<<(std::ostream& out, const vec3& v) {
+inline std::ostream& operator<<(std::ostream& out, const vec3& v) {
     return out << v.x() << ' ' << v.y() << ' ' << v.z();
 }
 
-vec3 operator+(const vec3& a, const vec3& b) {
+inline vec3 operator+(const vec3& a, const vec3& b) {
     return vec3(a.x() + b.x(), a.y() + b.y(), a.z() + b.z());
 }
 
-vec3 operator-(const vec3& a, const vec3& b) {
+inline vec3 operator-(const vec3& a, const vec3& b) {
     return a + (-b);
 }
 
-vec3 operator*(const vec3& vec, const double& x) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }
-vec3 operator*(const double& x, const vec3& vec) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }
-double operator*(const vec3& v1, const vec3& v2) { return v1.x()*v2.x() + v1.y()*v2.y() + v1.z()*v2.z(); }
-vec3 operator/(const vec3& vec, const double& x) { return vec * (1/x); }
-vec3 operator/(const double& x, const vec3& vec) { return vec * (1/x); }
-vec3 operator+(const vec3& vec, const double& x) { return vec3(x+vec.x(), x+vec.y(), x+vec.z()); }
-vec3 operator+(const double& x, const vec3& vec) { return vec3(x+vec.x(), x+vec.y(), x+vec.z()); }
+inline vec3 operator*(const vec3& vec, const double& x) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }
+inline vec3 operator*(const double& x, const vec3& vec) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }
+inline double operator*(const vec3& v1, const vec3& v2) { return v1.x()*v2.x() + v1.y()*v2.y() + v1.z()*v2.z(); }
+inline vec3 operator/(const vec3& vec, const double& x) { return vec * (1/x); }
+inline vec3 operator/(const double& x, const vec3& vec) { return vec * (1/x); }
+inline vec3 operator+(const vec3& vec, const double& x) { return vec3(x+vec.x(), x+vec.y(), x+vec.z()); }
+inline vec3 operator+(const double& x, const vec3& vec) { return vec3(x+vec.x(), x+vec.y(), x+vec.z()); }
 
 
 using color = vec3;

@@ -28,11 +28,11 @@ struct Scene {
 };
 
 
-void Scene::add_sphere(const std::shared_ptr<Sphere>& sphere) {
+inline void Scene::add_sphere(const std::shared_ptr<Sphere>& sphere) {
     spheres.push_back(sphere);
 }
 
-color Scene::draw(const int& i, const int& j, const ray& r, const Image& img) const {
+inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img) const {
     double t_last = std::numeric_limits<double>::max();
     std::shared_ptr<Sphere> s_last;
     for (auto& x : spheres) {

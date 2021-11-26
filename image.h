@@ -2,11 +2,13 @@
 
 #include <vector>
 #include <random>
+#include <functional>
 
 #include "camera.h"
 #include "vec3.h"
+#include "ray.h"
 
-double rdbl(int x) {
+inline double rdbl(int x) {
     if (x == 0) return 0; // lets us have a 'clean' single sample
     static std::normal_distribution<double> norm(0, 0.25);
     static std::uniform_real_distribution<double> unif(0, 1.0);
@@ -34,7 +36,7 @@ struct Image {
     Camera c;
 };
 
-void Image::fill_pixels(std::function<color (int, int, ray&, Image&)> f, int aa_samples = 1) {
+inline void Image::fill_pixels(std::function<color (int, int, ray&, Image&)> f, int aa_samples = 1) {
     auto bl = this->bottom_left();
     auto lim_x = this->limit_x();
     auto lim_y = this->limit_y();
@@ -51,7 +53,7 @@ void Image::fill_pixels(std::function<color (int, int, ray&, Image&)> f, int aa_
     }
 }
 
-void Image::to_ppm(std::ostream& out) const {
+inline void Image::to_ppm(std::ostream& out) const {
     out << "P3\n" << w << ' ' << h << "\n255\n";
     for (auto j = h-1; j >= 0; j--) {
         for (auto i = 0; i < w; i++) {
