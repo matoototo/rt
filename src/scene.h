@@ -62,9 +62,7 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
 
     if (t_last < std::numeric_limits<double>::max()) {
         point3 hit_point = r.at(t_last);
-        vec3 normal = o_last->normal(hit_point);
-        if (r.dir * normal > 0) normal = -normal;
-        ray new_ray = ray(hit_point, normal.unit_vec() + vec3::rand().unit_vec());
+        ray new_ray = o_last->scatter(hit_point, r);
         return 0.5*this->draw(i, j, new_ray, img, n-1) + std::pow(o_last->glow, 1)*o_last->obj_color;
     }
     return draw_sky(i, j, r, img);
