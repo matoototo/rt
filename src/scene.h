@@ -10,6 +10,7 @@
 #include "object.h"
 #include "sphere.h"
 #include "rectangle.h"
+#include "cuboid.h"
 
 
 using draw_func = std::function<color (int, int, ray&, Image&)>;
@@ -20,6 +21,7 @@ struct Scene {
 
     void add_sphere(const point3&, const double&, const color&, const double&);
     void add_rectangle(const point3&, const double&, const double&, const color&, const double&, const face&);
+    void add_cuboid(const point3&, const double&, const double&, const double&, const color&, const double&);
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
 
@@ -39,6 +41,10 @@ inline void Scene::add_sphere(const point3& center, const double& radius, const 
 
 inline void Scene::add_rectangle(const point3& o, const double& w, const double& h, const color& color, const double& gl, const face& f) {
     objects.push_back(std::make_shared<Rectangle>(o, w, h, color, gl, f));
+}
+
+inline void Scene::add_cuboid(const point3& o, const double& w, const double& h, const double& d, const color& color, const double& gl) {
+    objects.push_back(std::make_shared<Cuboid>(o, w, h, d, color, gl));
 }
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {

@@ -14,6 +14,7 @@ struct Rectangle : Object {
     double hit(const ray& r) const;
     vec3 normal(const point3& hp) const;
     inline bool check_bounds(const point3& hp) const;
+    inline bool same_plane(const point3& hp) const;
 
     point3 orig;
     double w, h;
@@ -28,8 +29,16 @@ inline bool is_between(double x, double a, double b) {
 inline bool Rectangle::check_bounds(const point3& hp) const {
     switch (face) {
         case x_side: return is_between(hp.z(), orig.z(), orig.z() - w) && is_between(hp.y(), orig.y(), orig.y() + h);
-        case y_side: return is_between(hp.x(), orig.x(), orig.x() + w) && is_between(hp.z(), orig.z(), orig.z() + h);
+        case y_side: return is_between(hp.x(), orig.x(), orig.x() + w) && is_between(hp.z(), orig.z(), orig.z() - h);
         case z_side: return is_between(hp.x(), orig.x(), orig.x() + w) && is_between(hp.y(), orig.y(), orig.y() + h);
+    }
+}
+
+inline bool Rectangle::same_plane(const point3& hp) const {
+    switch (face) {
+        case x_side: return dblequ(orig.x(), hp.x());
+        case y_side: return dblequ(orig.y(), hp.y());
+        case z_side: return dblequ(orig.z(), hp.z());
     }
 }
 

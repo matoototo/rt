@@ -9,3 +9,7 @@ inline double rdbl(int x = 1) {
     static std::default_random_engine re;
     return norm(re);
 }
+
+inline bool dblequ(const double& x, const double& y, const double& EPS = 0.0001) {
+    return std::abs(x-y) < EPS;
+}
