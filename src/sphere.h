@@ -5,8 +5,8 @@
 #include "ray.h"
 
 struct Sphere : Object {
-    Sphere(const point3& center, const double& radius, const color& color, const double& gl):
-            Object(gl, color), center(center), radius(radius) {}
+    Sphere(const point3& center, const double& radius, const Props& props):
+            Object(props), center(center), radius(radius) {}
 
     double hit(const ray& r) const;
     vec3 normal(const point3& hp) const;
@@ -33,6 +33,6 @@ inline double Sphere::hit(const ray& r) const {
 }
 
 inline vec3 Sphere::normal(const point3& hp) const {
-    return hp - this->center;
+    return (hp - this->center).unit_vec();
 }
 

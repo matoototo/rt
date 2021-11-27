@@ -3,13 +3,14 @@
 #include <limits>
 
 #include "object.h"
+#include "props.h"
 #include "ray.h"
 
 enum face { x_side, y_side, z_side };
 
 struct Rectangle : Object {
-    Rectangle(const point3& o, const double& w, const double& h, const color& color, const double& gl, face face):
-                    Object(gl, color), orig(o), w(w), h(h), face(face) {}
+    Rectangle(const point3& o, const double& w, const double& h, face face, const Props& props):
+                    Object(props), orig(o), w(w), h(h), face(face) {}
 
     double hit(const ray& r) const;
     vec3 normal(const point3& hp) const;

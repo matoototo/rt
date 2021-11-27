@@ -19,9 +19,9 @@ struct Scene {
 
     Scene(int n_bounces): n_bounces(n_bounces) {}
 
-    void add_sphere(const point3&, const double&, const color&, const double&);
-    void add_rectangle(const point3&, const double&, const double&, const color&, const double&, const face&);
-    void add_cuboid(const point3&, const double&, const double&, const double&, const color&, const double&);
+    void add_sphere(const point3&, const double&, const Props&);
+    void add_rectangle(const point3&, const double&, const double&, const face&, const Props&);
+    void add_cuboid(const point3&, const double&, const double&, const double&, const Props&);
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
 
@@ -35,16 +35,16 @@ struct Scene {
 };
 
 
-inline void Scene::add_sphere(const point3& center, const double& radius, const color& color, const double& gl) {
-    objects.push_back(std::make_shared<Sphere>(center, radius, color, gl));
+inline void Scene::add_sphere(const point3& center, const double& radius, const Props& props) {
+    objects.push_back(std::make_shared<Sphere>(center, radius, props));
 }
 
-inline void Scene::add_rectangle(const point3& o, const double& w, const double& h, const color& color, const double& gl, const face& f) {
-    objects.push_back(std::make_shared<Rectangle>(o, w, h, color, gl, f));
+inline void Scene::add_rectangle(const point3& o, const double& w, const double& h, const face& f, const Props& props) {
+    objects.push_back(std::make_shared<Rectangle>(o, w, h, f, props));
 }
 
-inline void Scene::add_cuboid(const point3& o, const double& w, const double& h, const double& d, const color& color, const double& gl) {
-    objects.push_back(std::make_shared<Cuboid>(o, w, h, d, color, gl));
+inline void Scene::add_cuboid(const point3& o, const double& w, const double& h, const double& d, const Props& props) {
+    objects.push_back(std::make_shared<Cuboid>(o, w, h, d, props));
 }
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
@@ -63,7 +63,7 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
     if (t_last < std::numeric_limits<double>::max()) {
         point3 hit_point = r.at(t_last);
         ray new_ray = o_last->scatter(hit_point, r);
-        return 0.5*this->draw(i, j, new_ray, img, n-1) + std::pow(o_last->glow, 1)*o_last->obj_color;
+        return o_last->props.reflect*this->draw(i, j, new_ray, img, n-1) + std::pow(o_last->props.glow, 1)*o_last->props.obj_color;
     }
     return draw_sky(i, j, r, img);
 }

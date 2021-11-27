@@ -4,18 +4,19 @@
 #include <limits>
 
 #include "object.h"
+#include "props.h"
 #include "rectangle.h"
 
 
 struct Cuboid : Object {
-    Cuboid(const point3& o, const double& w, const double& h, const double& d, const color& color, const double& gl):
-        Object(gl, color), orig(o), w(w), h(h), d(d) {
-        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, -d, h, color, gl, x_side));
-        faces.push_back(std::make_shared<Rectangle>(o + vec3{w, 0, 0}, -d, h, color, gl, x_side));
-        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, w, -d, color, gl, y_side));
-        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, h, 0}, w, -d, color, gl, y_side));
-        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, w, h, color, gl, z_side));
-        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, d}, w, h, color, gl, z_side));
+    Cuboid(const point3& o, const double& w, const double& h, const double& d, const Props& props):
+        Object(props), orig(o), w(w), h(h), d(d) {
+        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, -d, h, x_side, props));
+        faces.push_back(std::make_shared<Rectangle>(o + vec3{w, 0, 0}, -d, h, x_side, props));
+        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, w, -d, y_side, props));
+        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, h, 0}, w, -d, y_side, props));
+        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, w, h, z_side, props));
+        faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, d}, w, h, z_side, props));
     }
 
     double hit(const ray& r) const;
