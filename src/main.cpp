@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 #include "vec3.h"
 #include "camera.h"
@@ -30,7 +31,16 @@ int main() {
     scene.add_cuboid(point3{0.75, -0.6, -1.5}, 0.25, 0.75, 0.25, matte.colored({0, 1, 0}));
     scene.add_cuboid(point3{-0.175, 0.5, -2.25}, 0.35, 0.35, 0.35, matte.colored({0, 0, 1.0}));
 
-    img.fill_pixels(scene.get_fill_func(), 500);
+    int n_threads = 4;
+    std::vector<std::thread> threads;
+    for (auto i = 0; i < n_threads; ++i) {
+        threads.emplace_back(([&, i]() { img.fill_pixels(scene.get_fill_func(), 100, i, n_threads); }));
+    }
+
+    for (auto i = 0; i < n_threads; ++i) {
+        threads[i].join();
+    }
+
     img.to_ppm(file);
 
     return 0;

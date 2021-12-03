@@ -13,7 +13,7 @@
 #include "cuboid.h"
 
 
-using draw_func = std::function<color (int, int, ray&, Image&)>;
+using draw_func = std::function<color (int&, int&, ray&, Image&)>;
 
 struct Scene {
 
@@ -26,7 +26,7 @@ struct Scene {
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
 
     draw_func get_fill_func() const {
-        return [this](int i, int j, ray& r, Image& img) { return this->draw(i, j, r, img, n_bounces); };
+        return [this](int& i, int& j, ray& r, Image& img) { return this->draw(i, j, r, img, n_bounces); };
     }
 
     private:
