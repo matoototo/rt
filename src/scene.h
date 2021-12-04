@@ -30,21 +30,34 @@ struct Scene {
     }
 
     private:
-        std::vector<std::shared_ptr<Object>> objects;
+        std::vector<std::shared_ptr<Rectangle>> rectangles;
+        std::vector<std::shared_ptr<Sphere>> spheres;
+        std::vector<std::shared_ptr<Cuboid>> cuboids;
         int n_bounces;
 };
 
 
 inline void Scene::add_sphere(const point3& center, const double& radius, const Props& props) {
-    objects.push_back(std::make_shared<Sphere>(center, radius, props));
+    spheres.push_back(std::make_shared<Sphere>(center, radius, props));
 }
 
 inline void Scene::add_rectangle(const point3& o, const double& w, const double& h, const face& f, const Props& props) {
-    objects.push_back(std::make_shared<Rectangle>(o, w, h, f, props));
+    rectangles.push_back(std::make_shared<Rectangle>(o, w, h, f, props));
 }
 
 inline void Scene::add_cuboid(const point3& o, const double& w, const double& h, const double& d, const Props& props) {
-    objects.push_back(std::make_shared<Cuboid>(o, w, h, d, props));
+    cuboids.push_back(std::make_shared<Cuboid>(o, w, h, d, props));
+}
+
+template <typename T>
+inline void check(const std::vector<std::shared_ptr<T>>& objs, const ray& r, double& t_last, std::shared_ptr<Object>& o_last) {
+    for (auto& x : objs) {
+        auto t = x->hit(r);
+        if (t > 0 && t < t_last) {
+            t_last = t;
+            o_last = x;
+        }
+    }
 }
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
@@ -52,13 +65,9 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
 
     double t_last = std::numeric_limits<double>::max();
     std::shared_ptr<Object> o_last;
-    for (auto& x : objects) {
-        auto t = x->hit(r);
-        if (t > 0 && t < t_last) {
-            t_last = t;
-            o_last = x;
-        }
-    }
+    check<Rectangle>(this->rectangles, r, t_last, o_last);
+    check<Cuboid>(this->cuboids, r, t_last, o_last);
+    check<Sphere>(this->spheres, r, t_last, o_last);
 
     if (t_last < std::numeric_limits<double>::max()) {
         point3 hit_point = r.at(t_last);

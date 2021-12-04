@@ -34,7 +34,7 @@ inline void Image::fill_pixels(std::function<color (int&, int&, ray&, Image&)> f
     auto lim_x = this->limit_x();
     auto lim_y = this->limit_y();
 
-    for (int j = 0; j < h; j++) {
+    for (int j = 0; j < h; ++j) {
         for (int i = 0 + thread_id; i < w; i += n_threads) {
             color pixel = {0.0, 0.0, 0.0};
             for (int _ = 0; _ < aa_samples; _++) {
