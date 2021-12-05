@@ -1,14 +1,13 @@
 
 # Raytracer
 
-<img src="./images/outside.png" width=500 alt="Example"></img>
-<img src="./images/boxed.png" width=500 alt="Example"></img>
+<img src="./images/boxed.png" width=650 alt="Example"></img>
 
 To compile and run the raytracer locally, you can execute the bash file:
 ```bash
 run.sh
 ```
-Th first example is described in the [main.cpp](./src/main.cpp) file with the following code:
+The [outside.png](./images/outside.png) example is described in [main.cpp](./src/main.cpp) with the following code:
 ```cpp
 ...
 
