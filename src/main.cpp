@@ -7,6 +7,7 @@
 #include "props.h"
 #include "scene.h"
 #include "rectangle.h"
+#include "util.h"
 
 
 int main() {
@@ -30,6 +31,10 @@ int main() {
 
     scene.add_cuboid(point3{0.75, -0.6, -1.5}, 0.25, 0.75, 0.25, matte.colored({0, 1, 0}));
     scene.add_cuboid(point3{-0.175, 0.5, -2.25}, 0.35, 0.35, 0.35, matte.colored({0, 0, 1.0}));
+    #ifdef PRECOMPUTE_RDBL
+    // precompute doubles
+    seedrdbl();
+    #endif
 
     int n_threads = 4;
     std::vector<std::thread> threads;

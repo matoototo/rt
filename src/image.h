@@ -22,14 +22,14 @@ struct Image {
     constexpr vec3 limit_x() const { return vec3(this->c.vpw, 0, 0); }
     constexpr vec3 limit_y() const { return vec3(0, this->c.vph, 0); }
 
-    void fill_pixels(std::function<color (int&, int&, ray&, Image&)>, int, int, int);
+    void fill_pixels(const std::function<color (int&, int&, ray&, Image&)>&, int, int, int);
 
     std::vector<color> img;
     const int w, h;
     Camera c;
 };
 
-inline void Image::fill_pixels(std::function<color (int&, int&, ray&, Image&)> f, int aa_samples = 1, int thread_id = 0, int n_threads = 1) {
+inline void Image::fill_pixels(const std::function<color (int&, int&, ray&, Image&)>& f, int aa_samples = 1, int thread_id = 0, int n_threads = 1) {
     auto bl = this->bottom_left();
     auto lim_x = this->limit_x();
     auto lim_y = this->limit_y();
