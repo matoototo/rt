@@ -12,6 +12,7 @@
 #include "sphere.h"
 #include "rectangle.h"
 #include "cuboid.h"
+#include "SSE.h"
 
 
 using draw_func = std::function<color (int&, int&, ray&, Image&)>;
@@ -62,6 +63,9 @@ inline void check(const std::vector<std::shared_ptr<T>>& objs, const ray& r, flo
 }
 
 template <> inline void check<Sphere>(const std::vector<std::shared_ptr<Sphere>>& objs, const ray& r, float& t_last, std::shared_ptr<Object>& o_last) {
+    #ifdef USE_SSE
+    check_sphere_SSE(objs, r, t_last, o_last);
+    #else
     for (auto& x : objs) {
         auto t = x->hit(r);
         if (t > 0 && t < t_last) {
@@ -69,6 +73,7 @@ template <> inline void check<Sphere>(const std::vector<std::shared_ptr<Sphere>>
             o_last = x;
         }
     }
+    #endif
 }
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
