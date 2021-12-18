@@ -6,7 +6,7 @@
 struct Object {
     Object(Props props): props(props) {}
 
-    virtual double hit(const ray& r) const = 0;
+    virtual float hit(const ray& r) const = 0;
     virtual vec3 normal(const point3& hp) const = 0;
     ray scatter(const point3& hp, const ray& r_in) const;
 

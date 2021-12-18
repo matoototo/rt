@@ -3,27 +3,27 @@
 #include "vec3.h"
 
 struct Props {
-    Props(const double& smooth = 0.0, const color& obj_color = {0, 0, 0}, const double& glow = 0, const double& reflect = 0.5):
+    Props(const float& smooth = 0.0, const color& obj_color = {0, 0, 0}, const float& glow = 0, const float& reflect = 0.5):
           smooth(smooth), obj_color(obj_color), glow(glow), reflect(reflect) {}
 
-    double reflect;
+    float reflect;
     color obj_color;
-    double glow;
-    double smooth;
+    float glow;
+    float smooth;
 
     Props colored(const color& c) const {
         return Props(smooth, c, glow, reflect);
     }
 
-    Props glowed(const double& g) const {
+    Props glowed(const float& g) const {
         return Props(smooth, obj_color, g, reflect);
     }
 
-    Props reflecting(const double& r) const {
+    Props reflecting(const float& r) const {
         return Props(smooth, obj_color, glow, r);
     }
 
-    Props smoothing(const double& s) const {
+    Props smoothing(const float& s) const {
         return Props(s, obj_color, glow, reflect);
     }
 };
