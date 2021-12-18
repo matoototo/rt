@@ -1,7 +1,7 @@
 
 # Raytracer
 
-<img src="./images/boxed.png" width=650 alt="Example"></img>
+<img src="./images/sphere-heavy.png" width=650 alt="Example"></img>
 
 To compile and run the raytracer locally, you can execute the bash file:
 ```bash
