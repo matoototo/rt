@@ -19,7 +19,7 @@ using draw_func = std::function<color (int&, int&, ray&, Image&)>;
 
 struct Scene {
 
-    Scene(int n_bounces): n_bounces(n_bounces) {}
+    Scene(int n_bounces, float fog_factor = 0.0f): n_bounces(n_bounces), fog_factor(fog_factor) {}
 
     void add_sphere(const point3&, const float&, const Props&);
     void add_rectangle(const point3&, const float&, const float&, const face&, const Props&);
@@ -36,6 +36,7 @@ struct Scene {
         std::vector<std::shared_ptr<Sphere>> spheres;
         std::vector<std::shared_ptr<Cuboid>> cuboids;
         int n_bounces;
+        float fog_factor;
 };
 
 
@@ -85,8 +86,24 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
     check<Cuboid>(this->cuboids, r, t_last, o_last);
     check<Sphere>(this->spheres, r, t_last, o_last);
 
+    point3 hit_point = r.at(t_last);
+
+    ray fog_ray;
+    float fog_d;
+    const float fog_glow = 0.0;
+    const float fog_reflect = 1.0;
+    const color fog_color = {1.0, 1.0, 1.0};
+    if (fog_factor > 0) {
+        // e^{-K*d} = prob. of passing without scatter, K \in [0, 1]
+        // => d = -log(prob)/K
+        fog_d = -std::log(rand()/(float)RAND_MAX)/fog_factor;
+        if (fog_d < std::min((r.orig - hit_point).length(), 5.0f)) {
+            fog_ray = ray(r.at(fog_d/r.dir.length()), vec3::rand());
+            return hadamard(fog_reflect*this->draw(i, j, fog_ray, img, n-1), fog_color) + fog_glow*fog_color;
+        }
+    }
+
     if (t_last < 100 and t_last > 0.0001) {
-        point3 hit_point = r.at(t_last);
         ray new_ray = o_last->scatter(hit_point, r);
         return hadamard(o_last->props.reflect*this->draw(i, j, new_ray, img, n-1), o_last->props.obj_color) + o_last->props.glow*o_last->props.obj_color;
     }
@@ -94,6 +111,7 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
 }
 
 inline color Scene::draw_sky(const int& i, const int& j, const ray& r, const Image& img) const {
+    // return {0., 0., 0.}; // <-- uncomment for dark sky
     float mix = r.dir.unit_vec().y()*0.5 + 0.5;
     return (1-mix)*color(201/255., 214/255., 255/255.) + mix*color(226/255., 226/255., 226/255.);
 }
