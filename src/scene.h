@@ -88,7 +88,7 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
     if (t_last < 100 and t_last > 0.0001) {
         point3 hit_point = r.at(t_last);
         ray new_ray = o_last->scatter(hit_point, r);
-        return o_last->props.reflect*this->draw(i, j, new_ray, img, n-1) + std::pow(o_last->props.glow, 1)*o_last->props.obj_color;
+        return hadamard(o_last->props.reflect*this->draw(i, j, new_ray, img, n-1), o_last->props.obj_color) + o_last->props.glow*o_last->props.obj_color;
     }
     return draw_sky(i, j, r, img);
 }
