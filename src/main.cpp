@@ -4,6 +4,7 @@
 
 #include "vec3.h"
 #include "camera.h"
+#include "config.h"
 #include "props.h"
 #include "scene.h"
 #include "rectangle.h"
@@ -11,41 +12,37 @@
 
 
 int main() {
-    std::ofstream file("test.ppm");
+    std::ifstream json_file("config.json");
+    auto conf = Config(json_file);
 
-    Camera cam = Camera(point3(0, 0, 0), 4, 2, 2);
-    Image img = Image(1000, 500, cam);
-    Scene scene = Scene(1e3);
+    gradient sky_gradient = {json_to_vec3(conf.json["sky_gradient"][0]),
+                             json_to_vec3(conf.json["sky_gradient"][1])};
 
-    Props matte = Props(0.0, {0.8, 0.8, 0.8}, 0.0);
-    Props light = matte.glowed(2.5);
-    Props mirror = Props(0.8, {0.0, 0.0, 0.0}, 0.0, 0.9);
+    Scene scene = Scene(conf.json["max_bounces"], conf.json["fog_factor"], sky_gradient);
+    Camera cam = Camera(json_to_vec3(conf.json["cam_origin"]), conf.json["vpw"],
+                                     conf.json["vph"], conf.json["focal_length"]);
+    Image img = Image(conf.json["width"], conf.json["height"], cam);
 
-    scene.add_sphere(point3{-0.6, 0, -2}, 0.5, mirror.colored({1.0, 0.5, 0.5}));
-    scene.add_sphere(point3{0, -100.5, -2}, 100, matte);
-    scene.add_sphere(point3{0.6, 0, -2}, 0.5, light.colored({1, 1, 1}));
+    int samples = conf.json["samples"];
+    int n_threads = conf.json["n_threads"];
 
-    scene.add_rectangle(point3{-2.0, -0.7, -2.75}, 4, 1.5, z_side, matte);
-    scene.add_rectangle(point3{-2.0, -0.7, -2.75}, -4, 1.5, x_side, matte);
-    scene.add_rectangle(point3{2.0, -0.7, -2.75}, -4, 1.5, x_side, matte);
+    conf.add_objects(scene);
 
-    scene.add_cuboid(point3{0.75, -0.6, -1.5}, 0.25, 0.75, 0.25, matte.colored({0.5, 1, 0.5}));
-    scene.add_cuboid(point3{-0.175, 0.5, -2.25}, 0.35, 0.35, 0.35, matte.colored({0.5, 0.5, 1.0}));
     #ifdef PRECOMPUTE_RDBL
     // precompute floats
     seedrdbl();
     #endif
 
-    int n_threads = 4;
     std::vector<std::thread> threads;
     for (auto i = 0; i < n_threads; ++i) {
-        threads.emplace_back(([&, i]() { img.fill_pixels(scene.get_fill_func(), 1000, i, n_threads); }));
+        threads.emplace_back(([&, i]() { img.fill_pixels(scene.get_fill_func(), samples, i, n_threads); }));
     }
 
     for (auto i = 0; i < n_threads; ++i) {
         threads[i].join();
     }
 
+    std::ofstream file("test.ppm");
     img.to_ppm(file);
 
     return 0;

@@ -16,10 +16,12 @@
 
 
 using draw_func = std::function<color (int&, int&, ray&, Image&)>;
+using gradient = std::vector<color>;
+const gradient default_sky = {{201/255., 214/255., 255/255.}, {226/255., 226/255., 226/255.}};
 
 struct Scene {
 
-    Scene(int n_bounces, float fog_factor = 0.0f): n_bounces(n_bounces), fog_factor(fog_factor) {}
+    Scene(int n_bounces, float fog_factor = 0.0f, gradient sky = default_sky): n_bounces(n_bounces), fog_factor(fog_factor), sky(sky) {}
 
     void add_sphere(const point3&, const float&, const Props&);
     void add_rectangle(const point3&, const float&, const float&, const face&, const Props&);
@@ -37,6 +39,7 @@ struct Scene {
         std::vector<std::shared_ptr<Cuboid>> cuboids;
         int n_bounces;
         float fog_factor;
+        gradient sky;
 };
 
 
@@ -111,7 +114,6 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
 }
 
 inline color Scene::draw_sky(const int& i, const int& j, const ray& r, const Image& img) const {
-    // return {0., 0., 0.}; // <-- uncomment for dark sky
     float mix = r.dir.unit_vec().y()*0.5 + 0.5;
-    return (1-mix)*color(201/255., 214/255., 255/255.) + mix*color(226/255., 226/255., 226/255.);
+    return (1-mix)*sky[0] + mix*sky[1];
 }
