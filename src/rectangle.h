@@ -54,6 +54,8 @@ inline float Rectangle::hit(const ray& r) const {
     else if (face == y_side) t = (orig.y() - r.orig.y())/r.dir.y();
     else t = (orig.z() - r.orig.z())/r.dir.z();
 
+    if (dblequ(t, 0.0f)) t = 0.0;
+
     point3 hp = r.at(t); // hit point
     if (check_bounds(hp)) {
         return t;
