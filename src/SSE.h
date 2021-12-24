@@ -73,5 +73,61 @@ void inline check_sphere_SSE(const std::vector<std::shared_ptr<Sphere>>& spheres
             o_last = spheres[i];
         }
     }
+}
 
+void inline smart_check_sphere_SSE(const std::vector<std::shared_ptr<Sphere>>& spheres, const ray& r, float& t_last, std::shared_ptr<Object>& o_last,
+                                   const std::vector<float>& radii, const std::vector<float>& c0, const std::vector<float>& c1, const std::vector<float>& c2) {
+
+    __m128 ray_ox = _mm_load_ps1(&r.orig.e[0]);
+    __m128 ray_oy = _mm_load_ps1(&r.orig.e[1]);
+    __m128 ray_oz = _mm_load_ps1(&r.orig.e[2]);
+
+    __m128 ray_dx = _mm_load_ps1(&r.dir.e[0]);
+    __m128 ray_dy = _mm_load_ps1(&r.dir.e[1]);
+    __m128 ray_dz = _mm_load_ps1(&r.dir.e[2]);
+
+    __m128 a = vec3_sq(ray_dx, ray_dy, ray_dz);
+
+    const __m128 zero_const = _mm_set_ps1(0.0f);
+    const __m128 two_const = _mm_set_ps1(2.0f);
+    const __m128 neg_two_const = _mm_set_ps1(-2.0f);
+    const __m128 four_const = _mm_set_ps1(4.0f);
+
+    if (spheres.size() > 3) {
+        for (auto i = 0; i < spheres.size(); i += 4) {
+            __m128 sph_r = _mm_load_ps(radii.data() + i);
+            __m128 oc_x = _mm_load_ps(c0.data() + i);
+                   oc_x = _mm_sub_ps(ray_ox, oc_x);
+            __m128 oc_y = _mm_load_ps(c1.data() + i);
+                   oc_y = _mm_sub_ps(ray_oy, oc_y);
+            __m128 oc_z = _mm_load_ps(c2.data() + i);
+                   oc_z = _mm_sub_ps(ray_oz, oc_z);
+
+            __m128 b = _mm_mul_ps(mul_vec3(oc_x, oc_y, oc_z, ray_dx, ray_dy, ray_dz), two_const);
+            __m128 c = _mm_sub_ps(vec3_sq(oc_x, oc_y, oc_z), _mm_mul_ps(sph_r, sph_r));
+
+            __m128 disc = _mm_sub_ps(_mm_mul_ps(b, b), _mm_mul_ps(_mm_mul_ps(a, c), four_const));
+
+            __m128 disc_geq_0 = _mm_cmpge_ps(disc, zero_const);
+            __m128 sqrt_disc = _mm_sqrt_ps(disc);
+
+            __m128 t = _mm_div_ps(_mm_div_ps(_mm_add_ps(sqrt_disc, b), a), neg_two_const); // (-b - sqrt(disc))/(2*a)
+
+            for (auto j = 0; j < 4; ++j) {
+                if (t[j] > 0 && t[j] < t_last) {
+                    t_last = t[j];
+                    o_last = spheres[i + j];
+                }
+            }
+        }
+    }
+
+    // compute spheres on tail the standard way (maximum 3)
+    for (auto i = spheres.size() - spheres.size()%4; i < spheres.size(); ++i) {
+        auto t = spheres[i]->hit(r);
+        if (t > 0 && t < t_last) {
+            t_last = t;
+            o_last = spheres[i];
+        }
+    }
 }

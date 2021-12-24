@@ -40,11 +40,26 @@ struct Scene {
         int n_bounces;
         float fog_factor;
         gradient sky;
+
+        // SSE acceleration helpers
+        #ifdef USE_SSE
+        alignas(16) std::vector<float> radii;
+        alignas(16) std::vector<float> c0;
+        alignas(16) std::vector<float> c1;
+        alignas(16) std::vector<float> c2;
+        #endif
 };
 
 
 inline void Scene::add_sphere(const point3& center, const float& radius, const Props& props) {
     spheres.push_back(std::make_shared<Sphere>(center, radius, props));
+
+    #ifdef USE_SSE
+    radii.push_back(radius);
+    c0.push_back(center.e[0]);
+    c1.push_back(center.e[1]);
+    c2.push_back(center.e[2]);
+    #endif
 }
 
 inline void Scene::add_rectangle(const point3& o, const float& w, const float& h, const face& f, const Props& props) {
@@ -67,7 +82,7 @@ inline void check(const std::vector<std::shared_ptr<T>>& objs, const ray& r, flo
 }
 
 template <> inline void check<Sphere>(const std::vector<std::shared_ptr<Sphere>>& objs, const ray& r, float& t_last, std::shared_ptr<Object>& o_last) {
-    #ifdef USE_SSE
+    #ifdef USE_NAIVE_SSE
     check_sphere_SSE(objs, r, t_last, o_last);
     #else
     for (auto& x : objs) {
@@ -87,7 +102,12 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
     std::shared_ptr<Object> o_last;
     check<Rectangle>(this->rectangles, r, t_last, o_last);
     check<Cuboid>(this->cuboids, r, t_last, o_last);
+
+    #ifdef USE_SSE
+    smart_check_sphere_SSE(this->spheres, r, t_last, o_last, this->radii, this->c0, this->c1, this->c2);
+    #else
     check<Sphere>(this->spheres, r, t_last, o_last);
+    #endif
 
     point3 hit_point = r.at(t_last);
 
