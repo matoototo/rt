@@ -19,8 +19,8 @@ int main() {
                              json_to_vec3(conf.json["sky_gradient"][1])};
 
     Scene scene = Scene(conf.json["max_bounces"], conf.json["fog_factor"], sky_gradient);
-    Camera cam = Camera(json_to_vec3(conf.json["cam_origin"]), conf.json["vpw"],
-                                     conf.json["vph"], conf.json["focal_length"]);
+    Camera cam = Camera(json_to_vec3(conf.json["cam_origin"]), json_to_vec3(conf.json["cam_at"]),
+                                     conf.json["aspect_ratio"], conf.json["focal_length"], conf.json["fov"]);
     Image img = Image(conf.json["width"], conf.json["height"], cam);
 
     int samples = conf.json["samples"];

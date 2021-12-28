@@ -1,9 +1,9 @@
 {
     "width": 1000,
     "height": 1000,
-    "vpw": 4,
-    "vph": 4,
-    "focal_length": 5,
+    "fov": 37,
+    "aspect_ratio": 1,
+    "focal_length": 1,
     "cam_origin": [0.0, 0.0, 0.0],
     "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 
