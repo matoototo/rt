@@ -121,7 +121,7 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
         // => d = -log(prob)/K
         fog_d = -std::log(rand()/(float)RAND_MAX)/fog_factor;
         if (fog_d < std::min((r.orig - hit_point).length(), 5.0f)) {
-            fog_ray = ray(r.at(fog_d/r.dir.length()), vec3::rand());
+            fog_ray = ray(r.at(fog_d), vec3::rand());
             return hadamard(fog_reflect*this->draw(i, j, fog_ray, img, n-1), fog_color) + fog_glow*fog_color;
         }
     }
@@ -134,6 +134,6 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
 }
 
 inline color Scene::draw_sky(const int& i, const int& j, const ray& r, const Image& img) const {
-    float mix = r.dir.unit_vec().y()*0.5 + 0.5;
+    float mix = r.dir.y()*0.5 + 0.5;
     return (1-mix)*sky[0] + mix*sky[1];
 }

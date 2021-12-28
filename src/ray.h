@@ -4,7 +4,7 @@
 
 struct ray {
     ray(): orig(0, 0, 0), dir(0, 0, 0) {}
-    ray(const point3& o, const vec3& d): orig(o), dir(d) {}
+    ray(const point3& o, const vec3& d): orig(o), dir(d.unit_vec()) {}
 
     point3 at(const float& x) const { return orig + x*dir; }
 

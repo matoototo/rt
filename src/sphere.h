@@ -17,7 +17,9 @@ struct Sphere : Object {
 
 
 // R = ray, C = sphere centre
-// (R-C)(R-C) = normal(const point3& hp) constA + Bx) + C^2 - r^2 = 0
+// (R-C)(R-C) = r^2
+// R^2 - 2RC + C^2 - r^2 = 0
+// (A+Bx)^2 - 2C(A + Bx) + C^2 - r^2 = 0
 // (Bx)^2 + (2AB - 2BC)x + A^2 + C^2 - r^2 - 2AC = 0
 // (Bx)^2 + 2B(A-C)x + (A-C)^2 - r^2 = 0
 inline float Sphere::hit(const ray& r) const {
