@@ -53,6 +53,9 @@ inline vec3 operator-(const vec3& a, const vec3& b) {
 }
 
 inline vec3 hadamard(const vec3& v1, const vec3& v2) { return vec3(v1.x()*v2.x(), v1.y()*v2.y(), v1.z()*v2.z()); }
+inline vec3 cross(const vec3& v1, const vec3& v2) { return vec3(v1.y()*v2.z() - v1.z()*v2.y(),
+                                                                v1.z()*v2.x() - v1.x()*v2.z(),
+                                                                v1.x()*v2.y() - v1.y()*v2.x()); }
 
 inline vec3 operator*(const vec3& vec, const float& x) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }
 inline vec3 operator*(const float& x, const vec3& vec) { return vec3(x*vec.x(), x*vec.y(), x*vec.z()); }

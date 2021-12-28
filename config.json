@@ -1,10 +1,10 @@
 {
     "width": 500,
     "height": 250,
-    "vpw": 4,
-    "vph": 2,
-    "focal_length": 2,
+    "fov": 60,
+    "aspect_ratio": 2,
     "cam_origin": [0.0, 0.0, 0.0],
+    "cam_at": [0.0, 0.0, -1],
     "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 
     "n_threads": 4,
