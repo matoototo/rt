@@ -1,0 +1,46 @@
+{
+    "width": 2000,
+    "height": 2000,
+    "fov": 75,
+    "aspect_ratio": 1,
+    "cam_origin": [0.0, -1.0, 1.4],
+    "cam_at": [0.0, 0.0, 0.0],
+    "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+
+    "n_threads": 4,
+    "samples": 500,
+    "max_bounces": 50,
+    "fog_factor": 0.1,
+
+    "objects": [
+        {
+            "type": "mandelbulb",
+            "pos": [0.0, 0.0, 0.0],
+            "r": 1.5,
+            "eps": 0.00001,
+            "iter": 100,
+            "steps": 600,
+            "n": 8,
+            "c": [0.0, 0.0, 0.0],
+            "props": {
+                "smooth": 0.1,
+                "color": [1.0, 1.0, 1.0],
+                "glow": 0.0,
+                "reflect": 0.99
+            }
+        },
+        {
+            "type": "rectangle",
+            "pos": [-1.5, -1.5, 1.41],
+            "w": 3,
+            "h": 3,
+            "face": 2,
+            "props": {
+                "smooth": 0.1,
+                "color": [1.0, 1.0, 1.0],
+                "glow": 1.0,
+                "reflect": 0.7
+            }
+        }
+    ]
+}

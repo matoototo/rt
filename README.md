@@ -1,23 +1,22 @@
 
 # Raytracer
-
-<img src="./images/sphere-heavy.png" width=650 alt="Example"></img>
+<img src="./images/cornell.png" width=49% alt="Example"></img>
+<img src="./images/mandelbulb-pow8.png" width=49% alt="Example"></img>
 
 To compile and run the raytracer locally, first install [nlohmann/json](https://github.com/nlohmann/json) and then execute the bash file:
 ```bash
 run.sh
 ```
-Scenes are described in a JSON format.
-It looks like this: <br>
+Scenes are described in a JSON format:<br>
 (full example [config.json](./config.json))
 ```json
 {
     "width": 500,
     "height": 250,
-    "vpw": 4,
-    "vph": 2,
-    "focal_length": 2,
+    "fov": 60,
+    "aspect_ratio": 2,
     "cam_origin": [0.0, 0.0, 0.0],
+    "cam_at": [0.0, 0.0, -1],
     "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 
     "n_threads": 4,
