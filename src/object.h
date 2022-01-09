@@ -7,14 +7,14 @@ struct Object {
     Object(Props props): props(props) {}
 
     virtual float hit(const ray& r) const = 0;
-    virtual vec3 normal(const point3& hp) const = 0;
+    virtual vec3 normal(const point3& hp, const ray& r) const = 0;
     ray scatter(const point3& hp, const ray& r_in) const;
 
     Props props;
 };
 
 inline ray Object::scatter(const point3& hp, const ray& r_in) const {
-    vec3 normal = this->normal(hp);
+    vec3 normal = this->normal(hp, r_in);
     if (r_in.dir * normal > 0) normal = -normal;
 
     vec3 dir = {0.0, 0.0, 0.0};

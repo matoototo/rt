@@ -24,6 +24,8 @@ struct Config {
                 scene.add_rectangle(pos, o["w"], o["h"], o["face"], props);
             } else if (o["type"] == "cuboid") {
                 scene.add_cuboid(pos, o["w"], o["h"], o["d"], props);
+            } else if (o["type"] == "mandelbulb") {
+                scene.add_mandelbulb(pos, o["r"], o["eps"], o["iter"], o["steps"], o["n"], props, json_to_vec3(o["c"]));
             }
         }
     }

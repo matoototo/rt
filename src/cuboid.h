@@ -20,7 +20,7 @@ struct Cuboid : Object {
     }
 
     float hit(const ray& r) const;
-    vec3 normal(const point3& hp) const;
+    vec3 normal(const point3& hp, const ray& r) const;
 
     point3 orig;
     float w, h, d;
@@ -41,10 +41,10 @@ inline float Cuboid::hit(const ray& r) const {
 }
 
 
-inline vec3 Cuboid::normal(const point3& hp) const {
+inline vec3 Cuboid::normal(const point3& hp, const ray& r) const {
     for (auto& face : faces) {
         if (face->check_bounds(hp) && face->same_plane(hp)) {
-            return face->normal(hp);
+            return face->normal(hp, r);
         }
     }
     return {0.0, 0.0, 0.0};

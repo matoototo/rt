@@ -9,7 +9,7 @@ struct Sphere : Object {
             Object(props), center(center), radius(radius) {}
 
     float hit(const ray& r) const;
-    vec3 normal(const point3& hp) const;
+    vec3 normal(const point3& hp, const ray& r) const;
 
     point3 center;
     float radius;
@@ -34,7 +34,7 @@ inline float Sphere::hit(const ray& r) const {
     return (-b - sqrt(disc))/(2*a);
 }
 
-inline vec3 Sphere::normal(const point3& hp) const {
+inline vec3 Sphere::normal(const point3& hp, const ray& r) const {
     return (hp - this->center).unit_vec();
 }
 

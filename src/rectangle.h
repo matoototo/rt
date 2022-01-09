@@ -13,7 +13,7 @@ struct Rectangle : Object {
                     Object(props), orig(o), w(w), h(h), face(face) {}
 
     float hit(const ray& r) const;
-    vec3 normal(const point3& hp) const;
+    vec3 normal(const point3& hp, const ray& r) const;
     inline bool check_bounds(const point3& hp) const;
     inline bool same_plane(const point3& hp) const;
 
@@ -63,7 +63,7 @@ inline float Rectangle::hit(const ray& r) const {
     return -1;
 }
 
-inline vec3 Rectangle::normal(const point3& hp) const {
+inline vec3 Rectangle::normal(const point3& hp, const ray& r) const {
     switch (face) {
         case x_side: return vec3(1.0, 0.0, 0.0);
         case y_side: return vec3(0.0, 1.0, 0.0);
