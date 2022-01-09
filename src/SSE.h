@@ -28,7 +28,8 @@ void inline check_sphere_SSE(const std::vector<std::shared_ptr<Sphere>>& spheres
     __m128 ray_dy = _mm_load_ps1(&r.dir.e[1]);
     __m128 ray_dz = _mm_load_ps1(&r.dir.e[2]);
 
-    __m128 a = vec3_sq(ray_dx, ray_dy, ray_dz);
+    __m128 a = _mm_set_ps1(r.dir * r.dir);
+    __m128 inv2a = _mm_set_ps1(1.f / (-2 * r.dir * r.dir));
 
     const __m128 two_const = _mm_set_ps1(2.0f);
     const __m128 neg_two_const = _mm_set_ps1(-2.0f);
@@ -51,7 +52,7 @@ void inline check_sphere_SSE(const std::vector<std::shared_ptr<Sphere>>& spheres
             __m128 disc = _mm_sub_ps(_mm_mul_ps(b, b), _mm_mul_ps(_mm_mul_ps(a, c), four_const));
             __m128 sqrt_disc = _mm_sqrt_ps(disc);
 
-            __m128 t = _mm_div_ps(_mm_div_ps(_mm_add_ps(sqrt_disc, b), a), neg_two_const); // (-b - sqrt(disc))/(2*a)
+            __m128 t = _mm_mul_ps(_mm_add_ps(sqrt_disc, b), inv2a); // (-b - sqrt(disc))/(2*a)
 
             for (auto j = 0; j < 4; ++j) {
                 if (t[j] > 0 && t[j] < t_last) {
@@ -84,13 +85,14 @@ void inline smart_check_sphere_SSE(const std::vector<std::shared_ptr<Sphere>>& s
     __m128 ray_dz = _mm_load_ps1(&r.dir.e[2]);
 
     __m128 a = vec3_sq(ray_dx, ray_dy, ray_dz);
+    __m128 inv2a = _mm_set_ps1(1.f / (-2 * r.dir * r.dir));
 
     const __m128 two_const = _mm_set_ps1(2.0f);
     const __m128 neg_two_const = _mm_set_ps1(-2.0f);
     const __m128 four_const = _mm_set_ps1(4.0f);
 
     if (spheres.size() > 3) {
-        for (auto i = 0; i < spheres.size(); i += 4) {
+        for (auto i = 0; i < spheres.size()-3; i += 4) {
             __m128 sph_r = _mm_load_ps(radii.data() + i);
             __m128 oc_x = _mm_load_ps(c0.data() + i);
                    oc_x = _mm_sub_ps(ray_ox, oc_x);
@@ -105,7 +107,7 @@ void inline smart_check_sphere_SSE(const std::vector<std::shared_ptr<Sphere>>& s
             __m128 disc = _mm_sub_ps(_mm_mul_ps(b, b), _mm_mul_ps(_mm_mul_ps(a, c), four_const));
             __m128 sqrt_disc = _mm_sqrt_ps(disc);
 
-            __m128 t = _mm_div_ps(_mm_div_ps(_mm_add_ps(sqrt_disc, b), a), neg_two_const); // (-b - sqrt(disc))/(2*a)
+            __m128 t = _mm_mul_ps(_mm_add_ps(sqrt_disc, b), inv2a); // (-b - sqrt(disc))/(2*a)
 
             for (auto j = 0; j < 4; ++j) {
                 if (t[j] > 0 && t[j] < t_last) {
