@@ -7,9 +7,6 @@
 #include "vec3.h"
 
 struct Mandelbulb : Object {
-    // Note: currently 'origin' is only respected by the bounding sphere, the
-    // mandelbulb itself always stays centered around (0,0,0). This should be fixable
-    // by a translation but I haven't gotten around to it yet.
     Mandelbulb(const point3& o, const float& r, const float& eps, const int& n_iter, const int& steps, const int& n, const Props& props,
                const vec3& c = {0, 0, 0}): Object(props), o(o), boundingbox(o, r, props), eps(eps), n_iter(n_iter), steps(steps), n(n), c(c) {}
 
@@ -47,13 +44,13 @@ inline float Mandelbulb::distance(const point3& current_point) const {
 }
 
 inline float Mandelbulb::hit(const ray& r) const {
-    point3 current_point = r.orig;
+    point3 current_point = r.orig - this->o;
     if (distance(current_point) < 4*eps) {
-        current_point = r.at(0.01); // escape surface if already on it
+        current_point = r.at(0.01) - this->o; // escape surface if already on it
     } else {
         float bounding_t = boundingbox.hit(r);
         if (dblequ(bounding_t, -1)) return -1;
-        current_point = r.at(bounding_t*0.95);
+        current_point = r.at(bounding_t*0.95) - this->o;
     }
 
     float dist;
@@ -63,7 +60,7 @@ inline float Mandelbulb::hit(const ray& r) const {
         dist_sum += 0.99*dist;
         if (dist < eps) break;
         else if (dist < 4*eps) okay_sum = dist_sum; // save close enough, if we don't get any closer
-        current_point = r.orig + r.dir * dist_sum;
+        current_point = r.orig + r.dir * dist_sum - this->o;
     }
     if (dist < eps) return dist_sum;
     else if (!dblequ(okay_sum, 0.0f)) return okay_sum;
