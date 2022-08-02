@@ -3,6 +3,8 @@
 <img src="./images/cornell.png" width=49% alt="Example"></img>
 <img src="./images/mandelbulb-pow8.png" width=49% alt="Example"></img>
 
+This is a small modular raytracer written in C++. Along with the usual suspects, it includes SSE optimized sphere intersection calculation, raymarched implementation of the [mandelbulb fractal](https://en.wikipedia.org/wiki/Mandelbulb) and a portable JSON scene representation format.
+
 To compile and run the raytracer locally, first install [nlohmann/json](https://github.com/nlohmann/json) and then execute the bash file:
 ```bash
 run.sh
