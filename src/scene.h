@@ -125,8 +125,8 @@ inline bool Scene::select_object(const ray& r) {
     get_hit(r, t_last, o_last);
     if (selected)
         selected->toggle_select();
-    if (o_last and t_last < 100 and t_last > 0.0001) {
-        if (selected != o_last) o_last->toggle_select();
+    if (selected != o_last and o_last and t_last < 100 and t_last > 0.0001) {
+        o_last->toggle_select();
         selected = o_last;
     } else {
         selected = nullptr;

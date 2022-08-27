@@ -52,8 +52,8 @@ inline void Window::show() {
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left && !computing_next) {
-                    select(event.mouseButton.x, h - event.mouseButton.y);
-                    next_image = std::async(std::launch::async, compute_next);
+                    if (select(event.mouseButton.x, h - event.mouseButton.y))
+                        next_image = std::async(std::launch::async, compute_next);
                 }
             }
         }
