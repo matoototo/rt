@@ -52,8 +52,10 @@ inline void Window::show() {
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left && !computing_next) {
-                    if (select(event.mouseButton.x, h - event.mouseButton.y))
+                    auto xy = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    if (select(xy.x, h - xy.y)) {
                         next_image = std::async(std::launch::async, compute_next);
+                    }
                 }
             }
         }

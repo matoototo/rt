@@ -83,10 +83,13 @@ int main() {
 
     #ifdef INTERACTIVE
 
-    auto sfimg = Image_to_SFML(img);
+    sf::Image sfimg = Image_to_SFML(img);
     auto next_func = [&]() { return Image_to_SFML(compute_next(img, conf, scene)); };
-    auto select_func = [&](int x, int y) { init_img(img, cam, conf); return scene.select_object(cam.get_ray(x/double(img.w), y/double(img.h))); };
-    Window window(conf.json["width"], conf.json["height"],  next_func, select_func, "rt");
+    auto select_func = [&](int x, int y) {
+        init_img(img, cam, conf);
+        return scene.select_object(cam.get_ray(x/double(img.w), y/double(img.h)));
+    };
+    Window window(conf.json["width"], conf.json["height"], next_func, select_func, "rt");
     window.update(sfimg);
     window.show();
 
