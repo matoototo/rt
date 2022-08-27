@@ -56,13 +56,11 @@ inline void Window::show() {
                     next_image = std::async(std::launch::async, compute_next);
                 }
             }
-
-            if (next_image.valid() && next_image.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-                update(next_image.get());
-                computing_next = false;
-            }
         }
-
+        if (next_image.valid() && next_image.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+            update(next_image.get());
+            computing_next = false;
+        }
         window.clear();
         window.draw(sprite);
         window.display();
