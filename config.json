@@ -23,7 +23,8 @@
                 "smooth": 0.1,
                 "color": [0.4, 1.0, 0.4],
                 "glow": 0.0,
-                "reflect": 0.7
+                "reflect": 0.7,
+                "name": "rectangle_right"
             }
         },
         {
@@ -36,7 +37,8 @@
                 "smooth": 0.1,
                 "color": [1.0, 0.4, 0.4],
                 "glow": 0.0,
-                "reflect": 0.7
+                "reflect": 0.7,
+                "name": "rectangle_left"
             }
         },
         {
@@ -49,7 +51,8 @@
                 "smooth": 0.1,
                 "color": [1.0, 1.0, 1.0],
                 "glow": 0.0,
-                "reflect": 0.7
+                "reflect": 0.7,
+                "name": "rectangle_front"
             }
         },
         {
@@ -62,7 +65,8 @@
                 "smooth": 0.1,
                 "color": [1.0, 1.0, 1.0],
                 "glow": 0.0,
-                "reflect": 0.7
+                "reflect": 0.7,
+                "name": "rectangle_back"
             }
         },
         {
@@ -75,7 +79,8 @@
                 "smooth": 0.1,
                 "color": [1.0, 1.0, 1.0],
                 "glow": 0.0,
-                "reflect": 0.7
+                "reflect": 0.7,
+                "name": "rectangle_floor"
             }
         },
         {
@@ -86,7 +91,8 @@
                 "smooth": 1.0,
                 "color": [1.0, 1.0, 1.0],
                 "glow": 0.0,
-                "reflect": 0.8
+                "reflect": 0.8,
+                "name": "sphere"
             }
         },
         {
@@ -99,7 +105,8 @@
                 "smooth": 0.0,
                 "color": [1.0, 1.0, 1.0],
                 "glow": 0.0,
-                "reflect": 0.8
+                "reflect": 0.8,
+                "name": "cuboid"
             }
         }
     ]

@@ -1,16 +1,19 @@
 #pragma once
 
+#include <string>
+
 #include "props.h"
 #include "ray.h"
 
 struct Object {
-    Object(Props props): props(props) {}
+    Object(Props props): props(props), orig_props(props), name(props.name) {}
 
     virtual float hit(const ray& r) const = 0;
     virtual vec3 normal(const point3& hp, const ray& r) const = 0;
     ray scatter(const point3& hp, const ray& r_in) const;
 
     Props props;
+    std::string name;
 };
 
 inline ray Object::scatter(const point3& hp, const ray& r_in) const {
