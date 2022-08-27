@@ -123,13 +123,13 @@ inline bool Scene::select_object(const ray& r) {
     float t_last = std::numeric_limits<float>::max();
     std::shared_ptr<Object> o_last = nullptr;
     get_hit(r, t_last, o_last);
-    if (selected) {
+    if (selected)
         selected->toggle_select();
-        selected = nullptr;
-    }
     if (o_last and t_last < 100 and t_last > 0.0001) {
+        if (selected != o_last) o_last->toggle_select();
         selected = o_last;
-        selected->toggle_select();
+    } else {
+        selected = nullptr;
     }
 
     return o_last != nullptr;
