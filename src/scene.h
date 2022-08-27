@@ -30,6 +30,7 @@ struct Scene {
     void add_mandelbulb(const point3&, const float&, const float&, const int&, const int&, const int&, const Props&, const vec3&);
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
+    bool get_hit(const ray&, float&, std::shared_ptr<Object>&) const;
 
     draw_func get_fill_func() const {
         return [this](int& i, int& j, ray& r, Image& img) { return this->draw(i, j, r, img, n_bounces); };
@@ -102,11 +103,7 @@ template <> inline void check<Sphere>(const std::vector<std::shared_ptr<Sphere>>
     #endif
 }
 
-inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
-    if (n <= 0) return color(0, 0, 0);
-
-    float t_last = std::numeric_limits<float>::max();
-    std::shared_ptr<Object> o_last;
+inline bool Scene::get_hit(const ray& r, float& t_last, std::shared_ptr<Object>& o_last) const {
     check<Rectangle>(this->rectangles, r, t_last, o_last);
     check<Cuboid>(this->cuboids, r, t_last, o_last);
     check<Mandelbulb>(this->mandelbulbs, r, t_last, o_last);
@@ -116,6 +113,18 @@ inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& 
     #else
     check<Sphere>(this->spheres, r, t_last, o_last);
     #endif
+
+    return o_last != nullptr;
+}
+
+
+inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
+    if (n <= 0) return color(0, 0, 0);
+
+    float t_last = std::numeric_limits<float>::max();
+    std::shared_ptr<Object> o_last;
+
+    get_hit(r, t_last, o_last);
 
     point3 hit_point = r.at(t_last);
 
