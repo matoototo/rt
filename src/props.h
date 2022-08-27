@@ -30,3 +30,5 @@ struct Props {
         return Props(s, obj_color, glow, reflect);
     }
 };
+
+inline Props SELECTED = Props(0.0, {1, 1, 1}, 0.9, 0.5);

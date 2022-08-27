@@ -5,10 +5,10 @@
 #include "vec3.h"
 #include "camera.h"
 #include "config.h"
-#include "props.h"
 #include "scene.h"
 #include "rectangle.h"
 #include "util.h"
+#include "ray.h"
 
 #ifdef INTERACTIVE
 #include "window.h"
@@ -29,7 +29,7 @@ sf::Image Image_to_SFML(Image image) {
 }
 #endif
 
-Image& compute_next(Image& img, Config& conf, const Scene& scene, bool first = false) {
+Image& compute_next(Image& img, Config& conf, const Scene& scene) {
     int samples = conf.json["samples"];
     int n_threads = conf.json["n_threads"];
 
@@ -47,7 +47,7 @@ Image& compute_next(Image& img, Config& conf, const Scene& scene, bool first = f
         threads[i].join();
     }
 
-    if (!first)
+    if (conf.json["samples"] != conf.json["samples_orig"])
         img *= 0.5;
 
     conf.json["samples"] = samples * 2;
@@ -57,10 +57,16 @@ Image& compute_next(Image& img, Config& conf, const Scene& scene, bool first = f
     return img;
 }
 
+void init_img(Image& img, const Camera& cam, Config& conf) {
+    conf.json["samples"] = conf.json["samples_orig"];
+    img = Image(conf.json["width"], conf.json["height"], cam);
+}
+
 
 int main() {
     std::ifstream json_file("config.json");
     auto conf = Config(json_file);
+    conf.json["samples_orig"] = conf.json["samples"];
 
     gradient sky_gradient = {json_to_vec3(conf.json["sky_gradient"][0]),
                              json_to_vec3(conf.json["sky_gradient"][1])};
@@ -73,12 +79,14 @@ int main() {
 
     Image img = Image(conf.json["width"], conf.json["height"], cam);
 
-    compute_next(img, conf, scene, true); // TODO: figure out how to purify
+    compute_next(img, conf, scene); // TODO: figure out how to purify
 
     #ifdef INTERACTIVE
 
     auto sfimg = Image_to_SFML(img);
-    Window window(conf.json["width"], conf.json["height"], [&]() { return Image_to_SFML(compute_next(img, conf, scene)); }, "rt");
+    auto next_func = [&]() { return Image_to_SFML(compute_next(img, conf, scene)); };
+    auto select_func = [&](int x, int y) { init_img(img, cam, conf); return scene.select_object(cam.get_ray(x/double(img.w), y/double(img.h))); };
+    Window window(conf.json["width"], conf.json["height"],  next_func, select_func, "rt");
     window.update(sfimg);
     window.show();
 

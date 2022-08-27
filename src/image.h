@@ -18,9 +18,10 @@ struct Image {
 
     void fill_pixels(const std::function<color (int&, int&, ray&, Image&)>&, int, int, int);
     void operator*=(const double&);
+    void operator=(const Image& other) { img = other.img; w = other.w; h = other.h; }
 
     std::vector<color> img;
-    const int w, h;
+    int w, h;
     Camera c;
 };
 

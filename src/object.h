@@ -10,9 +10,12 @@ struct Object {
 
     virtual float hit(const ray& r) const = 0;
     virtual vec3 normal(const point3& hp, const ray& r) const = 0;
+    bool toggle_select();
     ray scatter(const point3& hp, const ray& r_in) const;
 
+    bool selected = false;
     Props props;
+    Props orig_props;
     std::string name;
 };
 
@@ -27,4 +30,14 @@ inline ray Object::scatter(const point3& hp, const ray& r_in) const {
     dir = dir + (1-props.smooth)*(normal + vec3::rand().unit_vec()).unit_vec();
 
     return ray(hp, dir);
+}
+
+inline bool Object::toggle_select() {
+    selected = !selected;
+    if (!selected) {
+        props = orig_props;
+    } else {
+        props = SELECTED;
+    }
+    return selected;
 }

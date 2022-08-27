@@ -17,10 +17,11 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 using compute_next_func = std::function<sf::Image ()>;
+using select_func = std::function<bool (int, int)>;
 
 struct Window {
-    Window(const int& w, const int& h, compute_next_func next, std::string title = "rt"):
-        w(w), h(h), title(title), compute_next(next) {};
+    Window(const int& w, const int& h, compute_next_func next, select_func sel, std::string title = "rt"):
+        w(w), h(h), title(title), compute_next(next), select(sel) {};
 
     void show();
     int update(sf::Image);
@@ -30,6 +31,7 @@ struct Window {
     sf::Texture tex;
     sf::Sprite sprite;
     compute_next_func compute_next;
+    select_func select;
     bool computing_next = false;
 };
 
@@ -42,10 +44,15 @@ inline void Window::show() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            if (event.type == sf::Event::KeyPressed) {
+            else if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Enter && !computing_next) {
                     computing_next = true;
+                    next_image = std::async(std::launch::async, compute_next);
+                }
+            }
+            else if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left && !computing_next) {
+                    select(event.mouseButton.x, h - event.mouseButton.y);
                     next_image = std::async(std::launch::async, compute_next);
                 }
             }

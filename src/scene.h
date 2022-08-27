@@ -30,6 +30,7 @@ struct Scene {
     void add_mandelbulb(const point3&, const float&, const float&, const int&, const int&, const int&, const Props&, const vec3&);
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
+    bool select_object(const ray&);
     bool get_hit(const ray&, float&, std::shared_ptr<Object>&) const;
 
     draw_func get_fill_func() const {
@@ -44,6 +45,7 @@ struct Scene {
         int n_bounces;
         float fog_factor;
         gradient sky;
+        std::shared_ptr<Object> selected = nullptr;
 
         // SSE acceleration helpers
         #ifdef USE_SSE
@@ -117,6 +119,21 @@ inline bool Scene::get_hit(const ray& r, float& t_last, std::shared_ptr<Object>&
     return o_last != nullptr;
 }
 
+inline bool Scene::select_object(const ray& r) {
+    float t_last = std::numeric_limits<float>::max();
+    std::shared_ptr<Object> o_last = nullptr;
+    get_hit(r, t_last, o_last);
+    if (selected) {
+        selected->toggle_select();
+        selected = nullptr;
+    }
+    if (o_last and t_last < 100 and t_last > 0.0001) {
+        selected = o_last;
+        selected->toggle_select();
+    }
+
+    return o_last != nullptr;
+}
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {
     if (n <= 0) return color(0, 0, 0);
