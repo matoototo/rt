@@ -32,7 +32,8 @@ struct Config {
 
     Props create_props(const nlohmann::json& o) {
         color c = json_to_vec3(o["color"]);
-        return Props(o["smooth"], c, o["glow"], o["reflect"], o["name"]);
+        std::string name = o.contains("name") ? o["name"].get<std::string>() : "";
+        return Props(o["smooth"], c, o["glow"], o["reflect"], name);
     }
 
     nlohmann::json json;
