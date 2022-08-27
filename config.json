@@ -1,64 +1,105 @@
 {
-    "width": 500,
-    "height": 250,
-    "fov": 60,
-    "aspect_ratio": 2,
+    "width": 400,
+    "height": 400,
+    "fov": 42,
+    "aspect_ratio": 1,
     "cam_origin": [0.0, 0.0, 0.0],
     "cam_at": [0.0, 0.0, -1],
-    "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    "sky_gradient": [[0.2, 0.4, 0.6], [0.6, 0.9, 1.0]],
 
     "n_threads": 4,
-    "samples": 10,
-    "max_bounces": 50,
-    "fog_factor": 0.2,
+    "samples": 4,
+    "max_bounces": 1000,
+    "fog_factor": 0.0,
 
     "objects": [
         {
-            "type": "sphere",
-            "pos": [-0.6, 0.0, -2.0],
-            "radius": 0.5,
+            "type": "rectangle",
+            "pos": [0.5, -0.5, -0.0],
+            "w": 2.1,
+            "h": 1,
+            "face": 0,
             "props": {
-                "smooth": 0.0,
-                "color": [0.8, 0.2, 0.2],
+                "smooth": 0.1,
+                "color": [0.4, 1.0, 0.4],
                 "glow": 0.0,
-                "reflect": 0.5
-            }
-        },
-        {
-            "type": "sphere",
-            "pos": [0.0, -1000.5, 0.0],
-            "radius": 1000,
-            "props": {
-                "smooth": 0.0,
-                "color": [0.8, 0.8, 0.8],
-                "glow": 0.0,
-                "reflect": 0.5
+                "reflect": 0.7
             }
         },
         {
             "type": "rectangle",
-            "pos": [0.6, -0.5, -1.5],
-            "w": 1.0,
-            "h": 1.0,
+            "pos": [-0.5, -0.5, -0.0],
+            "w": 2.1,
+            "h": 1,
             "face": 0,
             "props": {
+                "smooth": 0.1,
+                "color": [1.0, 0.4, 0.4],
+                "glow": 0.0,
+                "reflect": 0.7
+            }
+        },
+        {
+            "type": "rectangle",
+            "pos": [-0.5, -0.5, -2.0],
+            "w": 1,
+            "h": 1,
+            "face": 2,
+            "props": {
+                "smooth": 0.1,
+                "color": [1.0, 1.0, 1.0],
+                "glow": 0.0,
+                "reflect": 0.7
+            }
+        },
+        {
+            "type": "rectangle",
+            "pos": [-0.5, -0.5, 0],
+            "w": 1,
+            "h": 1,
+            "face": 2,
+            "props": {
+                "smooth": 0.1,
+                "color": [1.0, 1.0, 1.0],
+                "glow": 0.0,
+                "reflect": 0.7
+            }
+        },
+        {
+            "type": "rectangle",
+            "pos": [-0.5, -0.5, -0.0],
+            "w": 1,
+            "h": 2.1,
+            "face": 1,
+            "props": {
+                "smooth": 0.1,
+                "color": [1.0, 1.0, 1.0],
+                "glow": 0.0,
+                "reflect": 0.7
+            }
+        },
+        {
+            "type": "sphere",
+            "pos": [-0.2, -0.325, -1.75],
+            "radius": 0.175,
+            "props": {
                 "smooth": 1.0,
-                "color": [0.8, 0.8, 0.8],
-                "glow": 2.0,
-                "reflect": 0.9
+                "color": [1.0, 1.0, 1.0],
+                "glow": 0.0,
+                "reflect": 0.8
             }
         },
         {
             "type": "cuboid",
-            "pos": [0.0, -0.5, -2.25],
+            "pos": [0.1, -0.5, -1.6],
             "w": 0.25,
-            "h": 0.25,
+            "h": 0.5,
             "d": 0.25,
             "props": {
                 "smooth": 0.0,
-                "color": [0.2, 0.4, 0.8],
+                "color": [1.0, 1.0, 1.0],
                 "glow": 0.0,
-                "reflect": 0.5
+                "reflect": 0.8
             }
         }
     ]
