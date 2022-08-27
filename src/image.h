@@ -17,6 +17,7 @@ struct Image {
     color& at(const int& x, const int& y) { return img[y*w + x]; }
 
     void fill_pixels(const std::function<color (int&, int&, ray&, Image&)>&, int, int, int);
+    void operator*=(const double&);
 
     std::vector<color> img;
     const int w, h;
@@ -31,7 +32,7 @@ inline void Image::fill_pixels(const std::function<color (int&, int&, ray&, Imag
                 ray r = c.get_ray((i+1+rdbl(_))/w, (j+1+rdbl(_))/h);
                 pixel = pixel + f(i, j, r, *this);
             }
-            this->at(i, j) = (pixel / aa_samples);
+            this->at(i, j) += (pixel / aa_samples);
         }
     }
 }
@@ -44,5 +45,11 @@ inline void Image::to_ppm(std::ostream& out) const {
             out << int(c.x()) << ' ' << int(c.y()) << ' ' << int(c.z()) << '\n';
         }
         out << '\n';
+    }
+}
+
+inline void Image::operator*=(const double& s) {
+    for (auto& c : img) {
+        c *= s;
     }
 }
