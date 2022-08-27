@@ -41,7 +41,7 @@ inline void Image::to_ppm(std::ostream& out) const {
     out << "P3\n" << w << ' ' << h << "\n255\n";
     for (auto j = h-1; j >= 0; j--) {
         for (auto i = 0; i < w; i++) {
-            color c = at(i, j) * 255;
+            color c = (at(i, j) * 255).clamp(0, 255);
             out << int(c.x()) << ' ' << int(c.y()) << ' ' << int(c.z()) << '\n';
         }
         out << '\n';

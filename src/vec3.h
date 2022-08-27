@@ -14,6 +14,10 @@ vec3 operator/(const vec3& vec, const float& x);
 vec3 operator/(const float& x, const vec3& vec);
 inline vec3 operator+(const vec3& a, const vec3& b);
 
+inline float clampf(float x, float min, float max) {
+    return x < min ? min : x > max ? max : x;
+}
+
 struct vec3 {
     constexpr vec3(): e{0, 0, 0} {}
     constexpr vec3(float x, float y, float z): e{x,y,z} {}
@@ -28,6 +32,10 @@ struct vec3 {
                             else return vec3(0.0, 0.0, 0.0); }
 
     float length() const { return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]); }
+
+    vec3 clamp(float min, float max) const {
+        return vec3(clampf(e[0], min, max), clampf(e[1], min, max), clampf(e[2], min, max));
+    }
 
     static vec3 rand();
 

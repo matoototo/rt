@@ -21,7 +21,7 @@ sf::Image Image_to_SFML(Image image) {
     sfml_img.create(w, h, sf::Color::Black);
     for (int j = 1; j < h; ++j) {
         for (int i = 0; i < w; i++) {
-            color c = pixels[j*w + i];
+            color c = pixels[j*w + i].clamp(0, 1);
             sfml_img.setPixel(i, h-j, sf::Color(int(c.x() * 255), int(c.y() * 255), int(c.z() * 255)));
         }
     }
