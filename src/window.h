@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <future>
 #include <iostream>
 #include <functional>
 
@@ -27,20 +28,32 @@ struct Window {
     sf::Texture tex;
     sf::Sprite sprite;
     compute_next_func compute_next;
+    bool computing_next = false;
 };
 
 inline void Window::show() {
     sf::RenderWindow window(sf::VideoMode(w, h), title);
+    std::future<sf::Image> next_image;
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Enter)
-                   update(compute_next());
+                if (event.key.code == sf::Keyboard::Enter && !computing_next) {
+                    computing_next = true;
+                    next_image = std::async(std::launch::async, compute_next);
+                }
+            }
+
+            if (next_image.valid() && next_image.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+                update(next_image.get());
+                computing_next = false;
             }
         }
+
         window.clear();
         window.draw(sprite);
         window.display();
