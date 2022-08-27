@@ -9,6 +9,14 @@ To compile and run the raytracer locally, first install [nlohmann/json](https://
 ```bash
 run.sh
 ```
+
+To run in interactive mode (window + sample doubling), also install [SFML/SFML](https://github.com/SFML/SFML) and instead execute the bash file:
+```bash
+run_interactive.sh
+```
+In interactive mode, pressing the `Enter` key doubles the sample count. 
+
+
 Scenes are described in a JSON format:<br>
 (full example [config.json](./config.json))
 ```json
