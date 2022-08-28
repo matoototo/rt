@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 #include <functional>
 
@@ -10,7 +11,7 @@
 
 
 struct Image {
-    Image(const int& w, const int& h, const Camera& c): w(w), h(h), c(c) { img.resize(w*h, color(0, 0, 0)); }
+    Image(const int& w, const int& h, std::shared_ptr<Camera> c): w(w), h(h), c(c) { img.resize(w*h, color(0, 0, 0)); }
 
     void to_ppm(std::ostream&) const;
     color at(const int& x, const int& y) const { return img[y*w + x]; }
@@ -22,7 +23,7 @@ struct Image {
 
     std::vector<color> img;
     int w, h;
-    Camera c;
+    std::shared_ptr<Camera> c;
 };
 
 inline void Image::fill_pixels(const std::function<color (int&, int&, ray&, Image&)>& f, int aa_samples = 1, int thread_id = 0, int n_threads = 1) {
@@ -30,7 +31,7 @@ inline void Image::fill_pixels(const std::function<color (int&, int&, ray&, Imag
         for (int i = 0 + thread_id; i < w; i += n_threads) {
             color pixel = {0.0, 0.0, 0.0};
             for (int _ = 0; _ < aa_samples; _++) {
-                ray r = c.get_ray((i+1+rdbl(_))/w, (j+1+rdbl(_))/h);
+                ray r = c->get_ray((i+1+rdbl(_))/w, (j+1+rdbl(_))/h);
                 pixel = pixel + f(i, j, r, *this);
             }
             this->at(i, j) += (pixel / aa_samples);

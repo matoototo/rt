@@ -10,11 +10,11 @@ To compile and run the raytracer locally, first install [nlohmann/json](https://
 run.sh
 ```
 
-To run in interactive mode (window + sample doubling), also install [SFML/SFML](https://github.com/SFML/SFML) and instead execute the bash file:
+To run in interactive mode, also install [SFML/SFML](https://github.com/SFML/SFML) and instead execute the bash file:
 ```bash
 run_interactive.sh
 ```
-In interactive mode, pressing the `Enter` key doubles the sample count. 
+In interactive mode, press `Enter` to double the sample count and `WASDQE` to move the camera origin.
 
 
 Scenes are described in a JSON format:<br>
@@ -27,6 +27,7 @@ Scenes are described in a JSON format:<br>
     "aspect_ratio": 2,
     "cam_origin": [0.0, 0.0, 0.0],
     "cam_at": [0.0, 0.0, -1],
+    "cam_step": 0.05,
     "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 
     "n_threads": 4,

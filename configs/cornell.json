@@ -5,6 +5,7 @@
     "aspect_ratio": 1,
     "cam_origin": [0.0, 0.0, 0.0],
     "cam_at": [0.0, 0.0, -1],
+    "cam_step": 0.05,
     "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 
     "n_threads": 4,

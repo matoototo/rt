@@ -57,7 +57,7 @@ Image& compute_next(Image& img, Config& conf, const Scene& scene) {
     return img;
 }
 
-void init_img(Image& img, const Camera& cam, Config& conf) {
+void init_img(Image& img, std::shared_ptr<Camera> cam, Config& conf) {
     conf.json["samples"] = conf.json["samples_orig"];
     img = Image(conf.json["width"], conf.json["height"], cam);
 }
@@ -72,7 +72,7 @@ int main() {
                              json_to_vec3(conf.json["sky_gradient"][1])};
 
     Scene scene = Scene(conf.json["max_bounces"], conf.json["fog_factor"], sky_gradient);
-    Camera cam = Camera(json_to_vec3(conf.json["cam_origin"]), json_to_vec3(conf.json["cam_at"]),
+    std::shared_ptr<Camera> cam = std::make_shared<Camera>(json_to_vec3(conf.json["cam_origin"]), json_to_vec3(conf.json["cam_at"]),
                                      conf.json["aspect_ratio"], conf.json["fov"]);
 
     conf.add_objects(scene);
@@ -87,9 +87,14 @@ int main() {
     auto next_func = [&]() { return Image_to_SFML(compute_next(img, conf, scene)); };
     auto select_func = [&](int x, int y) {
         init_img(img, cam, conf);
-        return scene.select_object(cam.get_ray(x/double(img.w), y/double(img.h)));
+        return scene.select_object(cam->get_ray(x/double(img.w), y/double(img.h)));
     };
-    Window window(conf.json["width"], conf.json["height"], next_func, select_func, "rt");
+    auto cam_move_func = [&](const vec3& dir) {
+        cam->move(conf.json["cam_step"] * dir);
+        init_img(img, cam, conf);
+    };
+
+    Window window(conf.json["width"], conf.json["height"], next_func, select_func, cam_move_func, "rt");
     window.update(sfimg);
     window.show();
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <vector>
 #include <string>
 #include <future>
@@ -18,26 +19,43 @@
 
 using compute_next_func = std::function<sf::Image ()>;
 using select_func = std::function<bool (int, int)>;
+using camera_move_func = std::function<void (const vec3&)>;
 
 struct Window {
-    Window(const int& w, const int& h, compute_next_func next, select_func sel, std::string title = "rt"):
-        w(w), h(h), title(title), compute_next(next), select(sel) {};
+    Window(const int& w, const int& h, compute_next_func next, select_func sel, camera_move_func cam, std::string title = "rt"):
+        w(w), h(h), title(title), compute_next(next), select(sel), move_cam(cam) {};
 
     void show();
     int update(sf::Image);
+    void start_refresh();
 
     int w, h;
     std::string title;
     sf::Texture tex;
     sf::Sprite sprite;
+    std::future<sf::Image> next_image;
     compute_next_func compute_next;
     select_func select;
+    camera_move_func move_cam;
     bool computing_next = false;
 };
 
+inline void Window::start_refresh() {
+    next_image = std::async(std::launch::async, compute_next);
+    computing_next = true;
+}
+
 inline void Window::show() {
     sf::RenderWindow window(sf::VideoMode(w, h), title);
-    std::future<sf::Image> next_image;
+
+    std::map<int, vec3> key_dirs = {
+        {sf::Keyboard::W, vec3(0, 0, -1)},
+        {sf::Keyboard::S, vec3(0, 0, 1)},
+        {sf::Keyboard::A, vec3(-1, 0, 0)},
+        {sf::Keyboard::D, vec3(1, 0, 0)},
+        {sf::Keyboard::Q, vec3(0, -1, 0)},
+        {sf::Keyboard::E, vec3(0, 1, 0)}
+    };
 
     while (window.isOpen()) {
         sf::Event event;
@@ -46,15 +64,18 @@ inline void Window::show() {
                 window.close();
             else if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Enter && !computing_next) {
-                    computing_next = true;
-                    next_image = std::async(std::launch::async, compute_next);
+                    start_refresh();
+                }
+                else if (key_dirs.find(event.key.code) != key_dirs.end() && !computing_next) {
+                    move_cam(key_dirs[event.key.code]);
+                    start_refresh();
                 }
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left && !computing_next) {
                     auto xy = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
                     if (select(xy.x, h - xy.y)) {
-                        next_image = std::async(std::launch::async, compute_next);
+                        start_refresh();
                     }
                 }
             }
