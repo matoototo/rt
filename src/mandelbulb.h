@@ -7,8 +7,8 @@
 #include "vec3.h"
 
 struct Mandelbulb : Object {
-    Mandelbulb(const point3& o, const float& r, const float& eps, const int& n_iter, const int& steps, const int& n, const Props& props,
-               const vec3& c = {0, 0, 0}): Object(o, props), boundingbox(o, r, props), eps(eps), n_iter(n_iter), steps(steps), n(n), c(c) {}
+    Mandelbulb(const point3& o, const float& r, const float& eps, const float& scale, const int& n_iter, const int& steps, const int& n, const Props& props,
+               const vec3& c = {0, 0, 0}): Object(o, props), boundingbox(o, r, props), eps(eps), scale(scale), n_iter(n_iter), steps(steps), n(n), c(c) {}
 
     void iterate(point3& p, float& dw) const;
     float distance(const point3& current_point) const;
@@ -19,14 +19,15 @@ struct Mandelbulb : Object {
     vec3 normal(const point3& hp, const ray& r) const;
 
     Sphere boundingbox;
-    float eps;
+    float eps, scale;
     int n_iter, steps, n;
     vec3 c;
 };
 
 inline float Mandelbulb::distance(const point3& current_point) const {
     // White-Nylander formula, I did not come up with this...
-    vec3 z = current_point;
+    vec3 scaled_point = current_point / scale;
+    vec3 z = scaled_point;
 	float dr = 1.0;
 	float r = 0.0;
 	for (int i = 0; i < n_iter; i++) {
@@ -38,9 +39,9 @@ inline float Mandelbulb::distance(const point3& current_point) const {
 		float theta = n*acos(z.z()/r);
 		float phi = n*atan2(z.y(), z.x());
 		z = zr * point3(sin(theta)*cos(phi), sin(phi)*sin(theta), cos(theta));
-		z = z + current_point;
+		z = z + scaled_point;
 	}
-	return 0.5*log(r)*r/dr;
+	return scale * 0.5*log(r)*r/dr;
 }
 
 inline float Mandelbulb::hit(const ray& r) const {

@@ -27,7 +27,7 @@ struct Scene {
     void add_sphere(const point3&, const float&, const Props&);
     void add_rectangle(const point3&, const float&, const float&, const face&, const Props&);
     void add_cuboid(const point3&, const float&, const float&, const float&, const Props&);
-    void add_mandelbulb(const point3&, const float&, const float&, const int&, const int&, const int&, const Props&, const vec3&);
+    void add_mandelbulb(const point3&, const float&, const float&, const float&, const int&, const int&, const int&, const Props&, const vec3&);
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
     bool select_object(const ray&);
@@ -77,8 +77,8 @@ inline void Scene::add_cuboid(const point3& o, const float& w, const float& h, c
     cuboids.push_back(std::make_shared<Cuboid>(o, w, h, d, props));
 }
 
-inline void Scene::add_mandelbulb(const point3& o, const float& r, const float& eps, const int& iter, const int& steps, const int& n, const Props& props, const vec3& c) {
-    mandelbulbs.push_back(std::make_shared<Mandelbulb>(o, r, eps, iter, steps, n, props, c));
+inline void Scene::add_mandelbulb(const point3& o, const float& r, const float& eps, const float& scale, const int& iter, const int& steps, const int& n, const Props& props, const vec3& c) {
+    mandelbulbs.push_back(std::make_shared<Mandelbulb>(o, r, eps, scale, iter, steps, n, props, c));
 }
 
 template <typename T>
