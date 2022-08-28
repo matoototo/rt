@@ -6,12 +6,11 @@
 
 struct Sphere : Object {
     Sphere(const point3& center, const float& radius, const Props& props):
-            Object(props), center(center), radius(radius) {}
+            Object(center, props), radius(radius) {}
 
     float hit(const ray& r) const;
     vec3 normal(const point3& hp, const ray& r) const;
 
-    point3 center;
     float radius;
 };
 
@@ -23,7 +22,7 @@ struct Sphere : Object {
 // (Bx)^2 + (2AB - 2BC)x + A^2 + C^2 - r^2 - 2AC = 0
 // (Bx)^2 + 2B(A-C)x + (A-C)^2 - r^2 = 0
 inline float Sphere::hit(const ray& r) const {
-    vec3 oc = r.orig - this->center;
+    vec3 oc = r.orig - this->orig;
     float a = r.dir * r.dir;
     float b = 2 * r.dir * oc;
     float c = oc*oc - this->radius * this->radius;
@@ -35,6 +34,6 @@ inline float Sphere::hit(const ray& r) const {
 }
 
 inline vec3 Sphere::normal(const point3& hp, const ray& r) const {
-    return (hp - this->center).unit_vec();
+    return (hp - this->orig).unit_vec();
 }
 

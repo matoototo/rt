@@ -14,7 +14,7 @@ To run in interactive mode, also install [SFML/SFML](https://github.com/SFML/SFM
 ```bash
 run_interactive.sh
 ```
-In interactive mode, press `Enter` to double the sample count and `WASDQE` to move the camera origin.
+In interactive mode, press `Enter` to double the sample count, `WASDQE` to move the camera origin and `IJKLUO` to move the selected object.
 
 
 Scenes are described in a JSON format:<br>
@@ -28,6 +28,7 @@ Scenes are described in a JSON format:<br>
     "cam_origin": [0.0, 0.0, 0.0],
     "cam_at": [0.0, 0.0, -1],
     "cam_step": 0.05,
+    "move_step": 0.05,
     "sky_gradient": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 
     "n_threads": 4,

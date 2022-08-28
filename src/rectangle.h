@@ -10,14 +10,13 @@ enum face { x_side, y_side, z_side };
 
 struct Rectangle : Object {
     Rectangle(const point3& o, const float& w, const float& h, face face, const Props& props):
-                    Object(props), orig(o), w(w), h(h), face(face) {}
+                    Object(o, props), w(w), h(h), face(face) {}
 
     float hit(const ray& r) const;
     vec3 normal(const point3& hp, const ray& r) const;
     inline bool check_bounds(const point3& hp) const;
     inline bool same_plane(const point3& hp) const;
 
-    point3 orig;
     float w, h;
     face face;
 };

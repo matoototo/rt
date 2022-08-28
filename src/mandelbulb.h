@@ -8,7 +8,7 @@
 
 struct Mandelbulb : Object {
     Mandelbulb(const point3& o, const float& r, const float& eps, const int& n_iter, const int& steps, const int& n, const Props& props,
-               const vec3& c = {0, 0, 0}): Object(props), o(o), boundingbox(o, r, props), eps(eps), n_iter(n_iter), steps(steps), n(n), c(c) {}
+               const vec3& c = {0, 0, 0}): Object(o, props), boundingbox(o, r, props), eps(eps), n_iter(n_iter), steps(steps), n(n), c(c) {}
 
     void iterate(point3& p, float& dw) const;
     float distance(const point3& current_point) const;
@@ -18,10 +18,10 @@ struct Mandelbulb : Object {
     float hit(const ray& r) const;
     vec3 normal(const point3& hp, const ray& r) const;
 
-    float eps;
-    int steps, n, n_iter;
-    vec3 c, o;
     Sphere boundingbox;
+    float eps;
+    int n_iter, steps, n;
+    vec3 c;
 };
 
 inline float Mandelbulb::distance(const point3& current_point) const {
@@ -44,13 +44,13 @@ inline float Mandelbulb::distance(const point3& current_point) const {
 }
 
 inline float Mandelbulb::hit(const ray& r) const {
-    point3 current_point = r.orig - this->o;
+    point3 current_point = r.orig - this->orig;
     if (distance(current_point) < 4*eps) {
-        current_point = r.at(0.01) - this->o; // escape surface if already on it
+        current_point = r.at(0.01) - this->orig; // escape surface if already on it
     } else {
         float bounding_t = boundingbox.hit(r);
         if (dblequ(bounding_t, -1)) return -1;
-        current_point = r.at(bounding_t*0.95) - this->o;
+        current_point = r.at(bounding_t*0.95) - this->orig;
     }
 
     float dist;
@@ -60,7 +60,7 @@ inline float Mandelbulb::hit(const ray& r) const {
         dist_sum += 0.99*dist;
         if (dist < eps) break;
         else if (dist < 4*eps) okay_sum = dist_sum; // save close enough, if we don't get any closer
-        current_point = r.orig + r.dir * dist_sum - this->o;
+        current_point = r.orig + r.dir * dist_sum - this->orig;
     }
     if (dist < eps) return dist_sum;
     else if (!dblequ(okay_sum, 0.0f)) return okay_sum;

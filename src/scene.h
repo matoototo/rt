@@ -31,6 +31,7 @@ struct Scene {
     color draw(const int&, const int&, const ray&, const Image&, const int&) const;
     color draw_sky(const int&, const int&, const ray&, const Image&) const;
     bool select_object(const ray&);
+    void move_selected_object(const vec3&);
     bool get_hit(const ray&, float&, std::shared_ptr<Object>&) const;
 
     draw_func get_fill_func() const {
@@ -133,6 +134,11 @@ inline bool Scene::select_object(const ray& r) {
     }
 
     return o_last != nullptr;
+}
+
+inline void Scene::move_selected_object(const vec3& v) {
+    if (selected)
+        selected->move(v);
 }
 
 inline color Scene::draw(const int& i, const int& j, const ray& r, const Image& img, const int& n) const {

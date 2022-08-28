@@ -93,8 +93,12 @@ int main() {
         cam->move(conf.json["cam_step"] * dir);
         init_img(img, cam, conf);
     };
+    auto move_obj_func = [&](const vec3& dir) {
+        scene.move_selected_object(conf.json["move_step"] * dir);
+        init_img(img, cam, conf);
+    };
 
-    Window window(conf.json["width"], conf.json["height"], next_func, select_func, cam_move_func, "rt");
+    Window window(conf.json["width"], conf.json["height"], next_func, select_func, cam_move_func, move_obj_func, "rt");
     window.update(sfimg);
     window.show();
 

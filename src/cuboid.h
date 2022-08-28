@@ -10,7 +10,7 @@
 
 struct Cuboid : Object {
     Cuboid(const point3& o, const float& w, const float& h, const float& d, const Props& props):
-        Object(props), orig(o), w(w), h(h), d(d) {
+        Object(o, props), w(w), h(h), d(d) {
         faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, -d, h, x_side, props));
         faces.push_back(std::make_shared<Rectangle>(o + vec3{w, 0, 0}, -d, h, x_side, props));
         faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, 0}, w, -d, y_side, props));
@@ -19,10 +19,10 @@ struct Cuboid : Object {
         faces.push_back(std::make_shared<Rectangle>(o + vec3{0, 0, d}, w, h, z_side, props));
     }
 
+    void move(const vec3&);
     float hit(const ray& r) const;
     vec3 normal(const point3& hp, const ray& r) const;
 
-    point3 orig;
     float w, h, d;
     std::vector<std::shared_ptr<Rectangle>> faces;
 };
@@ -48,4 +48,10 @@ inline vec3 Cuboid::normal(const point3& hp, const ray& r) const {
         }
     }
     return {0.0, 0.0, 0.0};
+}
+
+inline void Cuboid::move(const vec3& v) {
+    for (auto& face : faces) {
+        face->move(v);
+    }
 }

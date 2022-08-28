@@ -39,11 +39,11 @@ void inline check_sphere_SSE(const std::vector<std::shared_ptr<Sphere>>& spheres
         for (auto i = 3; i < spheres.size(); i += 4) {
             __m128 sph_r = _mm_set_ps(spheres[i]->radius, spheres[i-1]->radius, spheres[i-2]->radius, spheres[i-3]->radius);
 
-            __m128 oc_x = _mm_set_ps(spheres[i]->center.e[0], spheres[i-1]->center.e[0], spheres[i-2]->center.e[0], spheres[i-3]->center.e[0]);
+            __m128 oc_x = _mm_set_ps(spheres[i]->orig.e[0], spheres[i-1]->orig.e[0], spheres[i-2]->orig.e[0], spheres[i-3]->orig.e[0]);
                    oc_x = _mm_sub_ps(ray_ox, oc_x);
-            __m128 oc_y = _mm_set_ps(spheres[i]->center.e[1], spheres[i-1]->center.e[1], spheres[i-2]->center.e[1], spheres[i-3]->center.e[1]);
+            __m128 oc_y = _mm_set_ps(spheres[i]->orig.e[1], spheres[i-1]->orig.e[1], spheres[i-2]->orig.e[1], spheres[i-3]->orig.e[1]);
                    oc_y = _mm_sub_ps(ray_oy, oc_y);
-            __m128 oc_z = _mm_set_ps(spheres[i]->center.e[2], spheres[i-1]->center.e[2], spheres[i-2]->center.e[2], spheres[i-3]->center.e[2]);
+            __m128 oc_z = _mm_set_ps(spheres[i]->orig.e[2], spheres[i-1]->orig.e[2], spheres[i-2]->orig.e[2], spheres[i-3]->orig.e[2]);
                    oc_z = _mm_sub_ps(ray_oz, oc_z);
 
             __m128 b = _mm_mul_ps(mul_vec3(oc_x, oc_y, oc_z, ray_dx, ray_dy, ray_dz), two_const);

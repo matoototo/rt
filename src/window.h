@@ -19,11 +19,11 @@
 
 using compute_next_func = std::function<sf::Image ()>;
 using select_func = std::function<bool (int, int)>;
-using camera_move_func = std::function<void (const vec3&)>;
+using move_func = std::function<void (const vec3&)>;
 
 struct Window {
-    Window(const int& w, const int& h, compute_next_func next, select_func sel, camera_move_func cam, std::string title = "rt"):
-        w(w), h(h), title(title), compute_next(next), select(sel), move_cam(cam) {};
+    Window(const int& w, const int& h, compute_next_func next, select_func sel, move_func cam, move_func obj, std::string title = "rt"):
+        w(w), h(h), title(title), compute_next(next), select(sel), move_cam(cam), move_obj(obj) {};
 
     void show();
     int update(sf::Image);
@@ -36,7 +36,8 @@ struct Window {
     std::future<sf::Image> next_image;
     compute_next_func compute_next;
     select_func select;
-    camera_move_func move_cam;
+    move_func move_cam;
+    move_func move_obj;
     bool computing_next = false;
 };
 
@@ -48,13 +49,22 @@ inline void Window::start_refresh() {
 inline void Window::show() {
     sf::RenderWindow window(sf::VideoMode(w, h), title);
 
-    std::map<int, vec3> key_dirs = {
+    std::map<int, vec3> move_dirs = {
         {sf::Keyboard::W, vec3(0, 0, -1)},
         {sf::Keyboard::S, vec3(0, 0, 1)},
         {sf::Keyboard::A, vec3(-1, 0, 0)},
         {sf::Keyboard::D, vec3(1, 0, 0)},
         {sf::Keyboard::Q, vec3(0, -1, 0)},
         {sf::Keyboard::E, vec3(0, 1, 0)}
+    };
+
+    std::map<int, vec3> move_obj_dirs = {
+        {sf::Keyboard::I, vec3(0, 0, -1)},
+        {sf::Keyboard::K, vec3(0, 0, 1)},
+        {sf::Keyboard::J, vec3(-1, 0, 0)},
+        {sf::Keyboard::L, vec3(1, 0, 0)},
+        {sf::Keyboard::U, vec3(0, -1, 0)},
+        {sf::Keyboard::O, vec3(0, 1, 0)}
     };
 
     while (window.isOpen()) {
@@ -66,8 +76,12 @@ inline void Window::show() {
                 if (event.key.code == sf::Keyboard::Enter && !computing_next) {
                     start_refresh();
                 }
-                else if (key_dirs.find(event.key.code) != key_dirs.end() && !computing_next) {
-                    move_cam(key_dirs[event.key.code]);
+                else if (move_dirs.find(event.key.code) != move_dirs.end() && !computing_next) {
+                    move_cam(move_dirs[event.key.code]);
+                    start_refresh();
+                }
+                else if (move_obj_dirs.find(event.key.code) != move_obj_dirs.end() && !computing_next) {
+                    move_obj(move_obj_dirs[event.key.code]);
                     start_refresh();
                 }
             }

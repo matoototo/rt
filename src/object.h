@@ -6,14 +6,16 @@
 #include "ray.h"
 
 struct Object {
-    Object(Props props): props(props), orig_props(props), name(props.name) {}
+    Object(point3 o, Props props): orig(o), props(props), orig_props(props), name(props.name) {}
 
     virtual float hit(const ray& r) const = 0;
     virtual vec3 normal(const point3& hp, const ray& r) const = 0;
     bool toggle_select();
+    virtual void move(const vec3&);
     ray scatter(const point3& hp, const ray& r_in) const;
 
     bool selected = false;
+    point3 orig;
     Props props;
     Props orig_props;
     std::string name;
@@ -40,4 +42,8 @@ inline bool Object::toggle_select() {
         props = SELECTED;
     }
     return selected;
+}
+
+inline void Object::move(const vec3& v) {
+    orig = orig + v;
 }
